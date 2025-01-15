@@ -26,15 +26,24 @@ GdipOBJ.Pen:=New_Pen("FF0000",,1)														; Red pen
 
 ;--- FUNCTIONS FOLLOW ------------------------------------------------------------------
 MainGUI() {
+	global phase
+	
 	phase := Gui()
 	; phase.Opt("-Caption +E0x80000 +LastFound +AlwaysOnTop +ToolWindow +OwnDialogs")
-	phase.Opt("+AlwaysOnTop")
+	phase.Opt("-MaximizeBox -MinimizeBox +LastFound +AlwaysOnTop +ToolWindow +OwnDialogs")
 	phase.BackColor := "C2BDBE"
 	phase.Title := "TC Calipers"
 
-	phase.AddText(,"Text") 
-	phase.Show("Center")
+	btnNew := phase.AddButton(,"New caliper")
+			.OnEvent("Click",clickCaliper)
+	phase.AddButton(,"Clear caliper")
+	phase.AddButton(,"Calibrate")
+	chkMarch := phase.AddCheckbox(,"March off")
+			.OnEvent("Click",toggleMarch)
+	
+	phase.Show("x1600 w120")
 	phase.OnEvent("Close",phaseClose)
+	return
 
 	/*	Internal phaseGUI methods
 	*/
@@ -48,6 +57,15 @@ MainGUI() {
 
 	}
 
+	clickCaliper(*) {
+
+	}
+	
+	toggleMarch(*) {
+		global active_March
+		active_March := !active_March
+	}
+	
 }
 
 Layered_Window_SetUp(Smoothing,Window_X,Window_Y,Window_W,Window_H,Window_Name:=1,Window_Options:="") {
