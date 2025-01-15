@@ -24,6 +24,32 @@ GdipOBJ := Layered_Window_SetUp(4,GdipOBJ.X,GdipOBJ.Y,GdipOBJ.W,GdipOBJ.H,2,"-Ca
 GdipOBJ.Pen:=New_Pen("FF0000",,1)														; Red pen
 
 
+;--- FUNCTIONS FOLLOW ------------------------------------------------------------------
+MainGUI() {
+	phase := Gui()
+	; phase.Opt("-Caption +E0x80000 +LastFound +AlwaysOnTop +ToolWindow +OwnDialogs")
+	phase.Opt("+AlwaysOnTop")
+	phase.BackColor := "C2BDBE"
+	phase.Title := "TC Calipers"
+
+	phase.AddText(,"Text") 
+	phase.Show("Center")
+	phase.OnEvent("Close",phaseClose)
+
+	/*	Internal phaseGUI methods
+	*/
+	phaseClose(*) {
+		ask := MsgBox("Really quit Calipers?","Exit",262161)
+		If (ask="OK")
+		{
+			; eventlog("<<<<< Session end.")
+			ExitApp
+		}
+
+	}
+
+}
+
 
 
 ;--- INCLUDES FOLLOW -------------------------------------------------------------------
