@@ -50,6 +50,35 @@ MainGUI() {
 
 }
 
+Layered_Window_SetUp(Smoothing,Window_X,Window_Y,Window_W,Window_H,Window_Name:=1,Window_Options:="") {
+	Layered:={}
+	Layered.W:=Window_W
+	Layered.H:=Window_H
+	Layered.X:=Window_X
+	Layered.Y:=Window_Y
+	Layered.Name:=Window_Name
+	Layered.Options:=Window_Options
+	Layered.Token:=Gdip_Startup()
+	Create_Layered_GUI(Layered)
+	Layered.hwnd:=winExist()
+	Layered.hbm := CreateDIBSection(Window_W,Window_H)
+	Layered.hdc := CreateCompatibleDC()
+	Layered.obm := SelectObject(Layered.hdc,Layered.hbm)
+	Layered.G := Gdip_GraphicsFromHDC(Layered.hdc)
+	Gdip_SetSmoothingMode(Layered.G,Smoothing)
+	return Layered
+}
+
+Create_Layered_GUI(Layered)
+{
+	; Gui,% Layered.Name ": +E0x80000 +LastFound " Layered.Options 
+	; Gui,% Layered.Name ":Show",% "x" Layered.X " y" Layered.Y " w" Layered.W " h" Layered.H " NA"
+}
+
+New_Pen(colour:="000000",Alpha:="FF",Width:= 5) {
+	new_colour := "0x" Alpha colour 
+	return Gdip_CreatePen(New_Colour,Width)
+}
 
 
 ;--- INCLUDES FOLLOW -------------------------------------------------------------------
