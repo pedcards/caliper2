@@ -19,7 +19,7 @@ calArray := {}																			; Array of X positions
 mLast := {}																				; To store mouse X,Y coords
 scale := ""																				; Multiplier for calibration
 
-main:=MainGUI()
+MainGUI()
 GdipOBJ := Layered_Window_SetUp(4,GdipOBJ.X,GdipOBJ.Y,GdipOBJ.W,GdipOBJ.H,2,"-Caption -DPIScale +Parent1")
 GdipOBJ.Pen:=New_Pen("FF0000",,1)														; Red pen
 
@@ -29,8 +29,7 @@ MainGUI() {
 	global phase
 	
 	phase := Gui()
-	; phase.Opt("-Caption +E0x80000 +LastFound +AlwaysOnTop +ToolWindow +OwnDialogs")
-	phase.Opt("-MaximizeBox -MinimizeBox +LastFound +AlwaysOnTop +ToolWindow +OwnDialogs")
+	phase.Opt("-MaximizeBox -MinimizeBox +AlwaysOnTop +ToolWindow")
 	phase.BackColor := "C2BDBE"
 	phase.Title := "TC Calipers"
 
