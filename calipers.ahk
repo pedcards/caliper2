@@ -350,7 +350,7 @@ WM_LBUTTONDOWN(wParam, lParam, msg, hwnd)
 	if (calArray.Length < 2) {															; No stamped caliper exists
 		return
 	} else {
-
+		clickCaliper()
 	}
 }
 
