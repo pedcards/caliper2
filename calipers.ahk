@@ -106,6 +106,13 @@ mouseCoord() {
 	return {X:mx,Y:my,lastX:lastX,lastY:lastY,dx:dx,dy:dy}
 }
 
+; Plunk new caliper line at last mouse position
+dropCaliper() {
+	global calArray, mLast
+	calArray.push(mLast)
+	Return
+}
+	
 
 Layered_Window_SetUp(Smoothing,Window_X,Window_Y,Window_W,Window_H,Window_Name:=1,Window_Options:="") {
 	Layered:={}
