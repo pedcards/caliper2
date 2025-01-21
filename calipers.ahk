@@ -113,6 +113,37 @@ dropCaliper() {
 	Return
 }
 	
+; Create caliper lines based on prev lines and new position
+; Add Hline if more than one line on the field
+drawCaliper() {
+	global GdipOBJ, calState, calArray, mLast, scr
+
+	mPos := mouseCoord()
+
+	if (calState.March=true) {
+
+	}
+
+	buildCalipers()
+
+	num := calArray.Length
+	if (num) {																			; Draw Hline when first line dropped
+		dx := Abs(calArray[1].X - mPos.x)
+		drawHline(calArray[1].x,mPos.x,mPos.y)
+		; scaleTooltip(dx)
+	}
+	if (num=2) {																		; Done when second line drops
+		active_Draw := 0
+		SetTimer(drawCaliper)
+		; reorderCalipers()
+	}
+
+
+	drawVline(mPos.x)																	; Draw live caliper
+	UpdateLayeredWindow(GdipOBJ.hwnd, GdipOBJ.hdc,scr.X,scr.Y,scr.W,scr.H)				; Refresh viewport
+}
+
+
 
 Layered_Window_SetUp(Smoothing,Window_X,Window_Y,Window_W,Window_H,Window_Name:=1,Window_Options:="") {
 	Layered:={}
