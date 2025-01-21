@@ -76,6 +76,24 @@ MainGUI() {
 	
 }
 
+; Start drawing caliper line based on lines present
+; 	0: Start first line (X1)
+; 	1: Start second line
+; 	2+: Both lines present, grab something
+clickCaliper() {
+	global GdipOBJ, calState, calArray
+
+	if (calArray.Length >= 2) {															; Both calipers present, grab something
+		mPos := mouseCoord()
+
+	}
+
+	calState.Draw := true
+	SetTimer(drawCaliper,50)
+	return
+}
+
+
 Layered_Window_SetUp(Smoothing,Window_X,Window_Y,Window_W,Window_H,Window_Name:=1,Window_Options:="") {
 	Layered:={}
 	Layered.W:=Window_W
