@@ -34,6 +34,8 @@ createLayeredWindow() {
 }
 
 MainGUI() {
+	global GdipOBJ, calArray, calState
+
 	phase := Gui()
 	phase.Opt("-MaximizeBox -MinimizeBox +AlwaysOnTop +ToolWindow")
 	phase.BackColor := "C2BDBE"
@@ -62,8 +64,6 @@ MainGUI() {
 	}
 
 	newCaliper(*) {
-		global GdipOBJ, calArray
-	
 		calArray := {}
 		Gdip_GraphicsClear(GdipOBJ.G)
 		clickCaliper()
@@ -71,7 +71,6 @@ MainGUI() {
 	}
 	
 	toggleMarch(*) {
-		global calState
 		calState.March := !calState.March
 	}
 	
