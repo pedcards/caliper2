@@ -132,7 +132,7 @@ drawCaliper() {
 	if (num) {																			; Draw Hline when first line dropped
 		dx := Abs(calArray[1].X - mPos.x)
 		drawHline(calArray[1].x,mPos.x,mPos.y)
-		; scaleTooltip(dx)
+		scaleTooltip(dx)
 	}
 	if (num=2) {																		; Done when second line drops
 		active_Draw := 0
@@ -174,6 +174,18 @@ drawHline(x1,x2,y) {
 	Return
 }
 
+; Display tooltip measurements
+scaleTooltip(dx) {
+	global scale
+
+	ms := (scale) ? Round(dx/scale) : ""
+	bpm := (ms) ? Round(60000/ms,1) : ""
+	ToolTip((scale="") 
+			? dx " px" 
+			: ms " ms`n" bpm " bpm") 
+	Return
+}
+	
 #HotIf (calState.Draw=false) 
 ^LButton::
 {
