@@ -19,8 +19,8 @@ scale := ""																				; Multiplier for calibration
 
 createLayeredWindow()
 MainGUI()
-GdipOBJ := Layered_Window_SetUp(4,GdipOBJ.X,GdipOBJ.Y,GdipOBJ.W,GdipOBJ.H,2,"-Caption -DPIScale +Parent1")
-GdipOBJ.Pen:=New_Pen("FF0000",,1)														; Red pen
+
+OnExit ExitFunc
 
 
 ;--- FUNCTIONS FOLLOW ------------------------------------------------------------------
@@ -97,8 +97,8 @@ Layered_Window_SetUp(Smoothing,Window_X,Window_Y,Window_W,Window_H,Window_Name:=
 
 Create_Layered_GUI(Layered)
 {
-	; Gui,% Layered.Name ": +E0x80000 +LastFound " Layered.Options 
-	; Gui,% Layered.Name ":Show",% "x" Layered.X " y" Layered.Y " w" Layered.W " h" Layered.H " NA"
+    baseWin := Gui("-Caption +E0x80000 +LastFound +AlwaysOnTop +ToolWindow +OwnDialogs")
+    baseWin.Show("NA")
 }
 
 New_Pen(colour:="000000",Alpha:="FF",Width:= 5) {
