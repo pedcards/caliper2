@@ -12,7 +12,11 @@
 CoordMode("Mouse","Screen")
 
 scr:={X: 0 ,Y: 0 ,W: A_ScreenWidth, H: A_ScreenHeight }									; Screen dimensions
-calState:={Draw:0,Move:0,March:0,Last:0}												; 
+calState:={
+		Active:0,																		; Calipers ACTIVE
+		Draw:0,																			; DRAW mode
+		Move:0,																			; MOVE mode
+		March:0}																		; MARCH mode
 calArray := []																			; Array of X positions
 mLast := {X:0,Y:0}																		; To store mouse X,Y coords
 scale := ""																				; Multiplier for calibration
