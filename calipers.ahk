@@ -262,6 +262,50 @@ scaleTooltip(dx) {
 	Return
 }
 
+; Calibration GUI to calculate scale
+Calibrate() {
+	global calArray, scale
+
+	cWin := Gui()
+	cWin.AddText("w200 Center","Select calibration measurement")
+	cWin.AddButton("w200","1000 ms (good)").OnEvent("Click",c1000)
+	cWin.AddButton("w200","2000 ms (better)").OnEvent("Click",c2000)
+	cWin.AddButton("w200","3000 ms (best)").OnEvent("Click",c3000)
+	cWin.AddButton("w200","Other").OnEvent("Click",cOther)
+	cWin.Title := "Calibrate"
+	cWin.OnEvent("Close",cWinClose)
+	cWin.Opt("+AlwaysOnTop -MaximizeBox -MinimizeBox")
+	cWin.Show("Center Autosize")
+	ms := 0
+
+	WinWaitClose("Calibrate")
+	if (ms) {
+		dx := Abs(calArray[1].X - calArray[2].X)
+		scale := dx/ms
+	}
+	Return
+	
+	c1000(*) {
+		ms:=1000
+		cWin.Destroy()
+	}
+	c2000(*) {
+		ms:=2000
+		cWin.Destroy()
+	}
+	c3000(*) {
+		ms:=3000
+		cWin.Destroy()
+	}
+	cOther(*) {
+		MsgBox("Other")
+		cWin.Destroy()
+	}
+	cWinClose(*) {
+		return
+	}
+}
+
 ; Check if any caliper lines within threshold distance, return calArray keynum
 FindClosest(mx,my) {
 	global calArray
