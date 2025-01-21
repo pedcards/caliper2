@@ -47,7 +47,7 @@ MainGUI() {
 
 	chkNew := phase.AddCheckbox(,"Calipers")
 			.OnEvent("Click",toggleCaliper)
-	chkMarch := phase.AddCheckbox(,"March off")
+	chkMarch := phase.AddCheckbox(,"March out")
 			.OnEvent("Click",toggleMarch)
 	btnCal := phase.AddButton(,"Calibrate")
 			.OnEvent("Click",btnCalibrate)
