@@ -22,7 +22,6 @@ MainGUI()
 
 OnExit ExitFunc
 
-
 ;--- FUNCTIONS FOLLOW ------------------------------------------------------------------
 
 createLayeredWindow() {
@@ -57,7 +56,6 @@ MainGUI() {
 		ask := MsgBox("Really quit Calipers?","Exit",262161)
 		If (ask="OK")
 		{
-			; eventlog("<<<<< Session end.")
 			ExitApp
 		}
 
@@ -109,7 +107,12 @@ New_Pen(colour:="000000",Alpha:="FF",Width:= 5) {
 	return Gdip_CreatePen(New_Colour,Width)
 }
 
+ExitFunc(ExitReason, ExitCode)
+{
+   global
+   ; gdi+ may now be shutdown on exiting the program
+   Gdip_Shutdown(GdipOBJ.Token)
+}
 
 ;--- INCLUDES FOLLOW -------------------------------------------------------------------
 #Include Gdip_All.ahk
-#Include Gdip_Toolbox.ahk
