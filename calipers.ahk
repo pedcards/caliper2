@@ -12,9 +12,9 @@
 CoordMode("Mouse","Screen")
 
 scr:={X: 0 ,Y: 0 ,W: A_ScreenWidth, H: A_ScreenHeight }									; Screen dimensions
-calState:={Draw:0,Move:0,March:0}														; <= These need to remain simple vars
-calArray := {}																			; Array of X positions
-mLast := {}																				; To store mouse X,Y coords
+calState:={Draw:0,Move:0,March:0,Last:0}												; 
+calArray := []																			; Array of X positions
+mLast := {X:0,Y:0}																		; To store mouse X,Y coords
 scale := ""																				; Multiplier for calibration
 
 createLayeredWindow()
