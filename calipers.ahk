@@ -85,6 +85,21 @@ clickCaliper() {
 
 	if (calArray.Length >= 2) {															; Both calipers present, grab something
 		mPos := mouseCoord()
+		; MouseGetPos, mx, my
+		; mLast := {X:mx,Y:my}
+		; best:=FindClosest(mx,my)
+		; Switch best
+		; {
+		; 	Case 1:
+		; 		active_Move := 1
+		; 		SetTimer, moveCaliper, 50
+		; 		Return
+		; 	Case 2:
+		; 		calArray.RemoveAt(best)													; Release this position, makes live
+
+		; 	Default:
+		; 		Return																	; Not close, ignore
+		; }
 
 	}
 
@@ -172,6 +187,53 @@ drawHline(x1,x2,y) {
 	
 	Gdip_DrawLine(GdipOBJ.G, GdipOBJ.Pen, x1, y, x2, y)
 	Return
+}
+
+moveCaliper() {
+; /*	Have grabbed X1 from dropped caliper
+; */
+; 	global GdipOBJ, calArray, mLast
+
+; 	MouseGetPos,mx,my
+; 	dx := mx-mLast.X
+; 	dy := my-mLast.Y
+; 	mLast := {X:mx,Y:my}
+
+; 	for key in calArray
+; 	{
+; 		calArray[key].X += dx
+; 		calArray[key].Y += dy
+; 	}
+
+; 	scaleTooltip(calArray[2].X-calArray[1].X)
+; 	drawCalipers()
+; 	drawHline(calArray[1].x,calArray[2].x,my)
+; 	UpdateLayeredWindow(GdipOBJ.hwnd, GdipOBJ.hdc)
+
+; 	Return
+}
+	
+moveRelease() {
+; /*	Drop the set of calipers being moved
+; */
+; 	global active_Move
+; 	active_Move=0
+; 	SetTimer, moveCaliper, Off
+; 	ToolTip
+; 	Return
+}
+
+reorderCalipers() {
+; /*	Make sure that X1 always smaller than X2
+; */
+; 	global calArray
+
+; 	if (calArray[1].X > calArray[2].X) {
+; 		t := calArray[1]
+; 		calArray[1] := calArray[2]
+; 		calArray[2] := t
+; 	}
+; 	Return
 }
 
 ; Display tooltip measurements
