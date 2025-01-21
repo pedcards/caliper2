@@ -17,12 +17,23 @@ calArray := {}																			; Array of X positions
 mLast := {}																				; To store mouse X,Y coords
 scale := ""																				; Multiplier for calibration
 
+createLayeredWindow()
 MainGUI()
 GdipOBJ := Layered_Window_SetUp(4,GdipOBJ.X,GdipOBJ.Y,GdipOBJ.W,GdipOBJ.H,2,"-Caption -DPIScale +Parent1")
 GdipOBJ.Pen:=New_Pen("FF0000",,1)														; Red pen
 
 
 ;--- FUNCTIONS FOLLOW ------------------------------------------------------------------
+
+createLayeredWindow() {
+	global GdipOBJ
+
+	GdipOBJ := Layered_Window_SetUp(4,scr.X,scr.Y,scr.W,scr.H)
+	GdipOBJ.Pen := New_Pen("FF0000",,2)
+	GdipOBJ.PenMarch := New_Pen("ff4000",,1)
+	return
+}
+
 MainGUI() {
 	global phase
 	
