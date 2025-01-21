@@ -85,22 +85,19 @@ clickCaliper() {
 
 	if (calArray.Length >= 2) {															; Both calipers present, grab something
 		mPos := mouseCoord()
-		; MouseGetPos, mx, my
-		; mLast := {X:mx,Y:my}
-		; best:=FindClosest(mx,my)
-		; Switch best
-		; {
-		; 	Case 1:
-		; 		active_Move := 1
-		; 		SetTimer, moveCaliper, 50
-		; 		Return
-		; 	Case 2:
-		; 		calArray.RemoveAt(best)													; Release this position, makes live
+		best:=FindClosest(mPos.x,mPos.y)
+		Switch best
+		{
+			Case 1:
+				calState.Move := true
+				SetTimer(moveCaliper, 50)
+				Return
+			Case 2:
+				calArray.RemoveAt(best)													; Release this position, makes live
 
-		; 	Default:
-		; 		Return																	; Not close, ignore
-		; }
-
+			Default:
+				Return																	; Not close, ignore
+		}
 	}
 
 	calState.Draw := true
@@ -247,7 +244,20 @@ scaleTooltip(dx) {
 			: ms " ms`n" bpm " bpm") 
 	Return
 }
+
+; Check if any caliper lines within threshold distance, return calArray keynum
+FindClosest(mx,my) {
+	global calArray
+	threshold := 3
 	
+	for key,val in calArray {
+		if Abs(val.X-mx) < threshold {
+			Return key																	; Return early if hit
+		}
+	}
+	Return
+}
+
 #HotIf (calState.Draw=false) 
 ^LButton::
 {
