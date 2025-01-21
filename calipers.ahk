@@ -156,6 +156,22 @@ buildCalipers() {
 	Return
 }
 
+; Draw vertical line at X
+drawVline(X) {
+	global GdipOBJ
+
+	Gdip_DrawLine(GdipOBJ.G, GdipOBJ.Pen, X, GdipOBJ.Y, X, GdipOBJ.H)
+	Return
+}
+
+; Draw horizontal line from X1-X2, at YI
+drawHline(x1,x2,y) {
+	global GdipOBJ
+	
+	Gdip_DrawLine(GdipOBJ.G, GdipOBJ.Pen, x1, y, x2, y)
+	Return
+}
+
 
 Layered_Window_SetUp(Smoothing,Window_X,Window_Y,Window_W,Window_H,Window_Name:=1,Window_Options:="") {
 	Layered:={}
