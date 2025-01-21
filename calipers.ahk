@@ -24,6 +24,8 @@ scale := ""																				; Multiplier for calibration
 createLayeredWindow()
 MainGUI()
 
+OnMessage(0x201, WM_LBUTTONDOWN)														; for future detection of LMB
+
 OnExit ExitFunc
 
 ;--- FUNCTIONS FOLLOW ------------------------------------------------------------------
@@ -341,6 +343,16 @@ LButton Up::
 {
 	dropCaliper()
 	Return
+}
+
+WM_LBUTTONDOWN(wParam, lParam, msg, hwnd)
+{
+	; PostMessage 0xA1, 2
+	if (calArray.Length < 2) {															; No stamped caliper exists
+		return
+	} else {
+
+	}
 }
 
 Layered_Window_SetUp(Smoothing,Window_X,Window_Y,Window_W,Window_H,Window_Name:=1,Window_Options:="") {
