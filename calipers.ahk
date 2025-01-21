@@ -45,12 +45,12 @@ MainGUI() {
 	phase.BackColor := "C2BDBE"
 	phase.Title := "TC Calipers"
 
-	btnNew := phase.AddButton(,"New caliper")
-			.OnEvent("Click",newCaliper)
-	phase.AddButton(,"Clear caliper")
-	phase.AddButton(,"Calibrate")
+	chkNew := phase.AddCheckbox(,"Calipers")
+			.OnEvent("Click",toggleCaliper)
 	chkMarch := phase.AddCheckbox(,"March off")
 			.OnEvent("Click",toggleMarch)
+	btnCal := phase.AddButton(,"Calibrate")
+			.OnEvent("Click",btnCalibrate)
 	
 	phase.Show("x1600 w120")
 	phase.OnEvent("Close",phaseClose)
@@ -67,17 +67,30 @@ MainGUI() {
 
 	}
 
-	newCaliper(*) {
+	toggleCaliper(*) {
+		calState.Active := !calState.Active
 		calArray := []
 		Gdip_GraphicsClear(GdipOBJ.G)
-		clickCaliper()
-		return	
+
+		if (calState.Active) {
+			clickCaliper()
+		} else {
+			UpdateLayeredWindow(GdipOBJ.hwnd, GdipOBJ.hdc,scr.X,scr.Y,scr.W,scr.H)
+			ToolTip()
+		}
 	}
-	
+
 	toggleMarch(*) {
 		calState.March := !calState.March
 	}
-	
+
+	btnCalibrate(*) {
+		if (calArray.Length < 2) {
+			MsgBox("Need to draw out caliper to measure")
+			return
+		}
+		Calibrate()
+	}
 }
 
 ; Start drawing caliper line based on lines present
