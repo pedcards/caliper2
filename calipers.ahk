@@ -35,15 +35,13 @@ createLayeredWindow() {
 }
 
 MainGUI() {
-	global phase
-	
 	phase := Gui()
 	phase.Opt("-MaximizeBox -MinimizeBox +AlwaysOnTop +ToolWindow")
 	phase.BackColor := "C2BDBE"
 	phase.Title := "TC Calipers"
 
 	btnNew := phase.AddButton(,"New caliper")
-			.OnEvent("Click",clickCaliper)
+			.OnEvent("Click",newCaliper)
 	phase.AddButton(,"Clear caliper")
 	phase.AddButton(,"Calibrate")
 	chkMarch := phase.AddCheckbox(,"March off")
@@ -65,13 +63,18 @@ MainGUI() {
 
 	}
 
-	clickCaliper(*) {
-
+	newCaliper(*) {
+		global GdipOBJ, calArray
+	
+		calArray := {}
+		Gdip_GraphicsClear(GdipOBJ.G)
+		clickCaliper()
+		return	
 	}
 	
 	toggleMarch(*) {
-		global active_March
-		active_March := !active_March
+		global calState
+		calState.March := !calState.March
 	}
 	
 }
