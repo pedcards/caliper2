@@ -148,16 +148,16 @@ drawCaliper() {
 		scaleTooltip(dx)
 	}
 	if (num=2) {																		; Done when second line drops
-		active_Draw := 0
-		SetTimer(drawCaliper)
+		calState.Draw := false
+		SetTimer(drawCaliper,0)
 		reorderCalipers()
 	}
 
-
 	drawVline(mPos.x)																	; Draw live caliper
 	UpdateLayeredWindow(GdipOBJ.hwnd, GdipOBJ.hdc,scr.X,scr.Y,scr.W,scr.H)				; Refresh viewport
-}
 
+	return
+}
 
 ; Draw all calipers lines from calArray
 buildCalipers() {
