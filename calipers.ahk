@@ -93,6 +93,19 @@ clickCaliper() {
 	return
 }
 
+mouseCoord() {
+	global mLast
+
+	MouseGetPos(&mx,&my)
+	lastX := mLast.X
+	lastY := mLast.Y
+	dx := mx-lastX
+	dy := my-lastY
+	mLast := {X:mx,Y:my}
+
+	return {X:mx,Y:my,lastX:lastX,lastY:lastY,dx:dx,dy:dy}
+}
+
 
 Layered_Window_SetUp(Smoothing,Window_X,Window_Y,Window_W,Window_H,Window_Name:=1,Window_Options:="") {
 	Layered:={}
