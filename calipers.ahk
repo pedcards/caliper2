@@ -144,6 +144,18 @@ drawCaliper() {
 }
 
 
+; Draw all calipers lines from calArray
+buildCalipers() {
+	global GdipOBJ, calArray
+
+	Gdip_GraphicsClear(GdipOBJ.G)
+	Loop calArray.Length																; Draw saved calipers
+	{
+		drawVline(calArray[A_Index].X)
+	}
+	Return
+}
+
 
 Layered_Window_SetUp(Smoothing,Window_X,Window_Y,Window_W,Window_H,Window_Name:=1,Window_Options:="") {
 	Layered:={}
