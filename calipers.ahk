@@ -108,6 +108,7 @@ clickCaliper() {
 	return
 }
 
+; Get mouse coords, last coords, and dx/dy
 mouseCoord() {
 	global mLast
 
@@ -152,7 +153,7 @@ drawCaliper() {
 	if (num=2) {																		; Done when second line drops
 		active_Draw := 0
 		SetTimer(drawCaliper)
-		; reorderCalipers()
+		reorderCalipers()
 	}
 
 
@@ -223,17 +224,16 @@ moveRelease() {
 ; 	Return
 }
 
+; Make sure that X1 always smaller than X2
 reorderCalipers() {
-; /*	Make sure that X1 always smaller than X2
-; */
-; 	global calArray
+	global calArray
 
-; 	if (calArray[1].X > calArray[2].X) {
-; 		t := calArray[1]
-; 		calArray[1] := calArray[2]
-; 		calArray[2] := t
-; 	}
-; 	Return
+	if (calArray[1].X > calArray[2].X) {
+		t := calArray[1]
+		calArray[1] := calArray[2]
+		calArray[2] := t
+	}
+	Return
 }
 
 ; Display tooltip measurements
