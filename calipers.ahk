@@ -11,10 +11,8 @@
 #Include %A_ScriptDir%\lib\
 CoordMode("Mouse","Screen")
 
-GdipOBJ:={X: 0 ,Y: 0 ,W: A_ScreenWidth, H: A_ScreenHeight }								; Screen overlay object
-active_Draw:=0																			; <= These need to remain simple vars
-active_Move:=0																			; <= so they can be used in GUI 
-active_March:=0																			; <= commands.
+scr:={X: 0 ,Y: 0 ,W: A_ScreenWidth, H: A_ScreenHeight }									; Screen dimensions
+calState:={Draw:0,Move:0,March:0}														; <= These need to remain simple vars
 calArray := {}																			; Array of X positions
 mLast := {}																				; To store mouse X,Y coords
 scale := ""																				; Multiplier for calibration
