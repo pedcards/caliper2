@@ -52,7 +52,7 @@ MainGUI() {
 	btnCal := phase.AddButton(,"Calibrate")
 			.OnEvent("Click",btnCalibrate)
 	
-	phase.Show("x1600 w120")
+	phase.Show("x" scr.W * 0.8 " w120")
 	phase.OnEvent("Close",phaseClose)
 	return
 
@@ -64,7 +64,6 @@ MainGUI() {
 		{
 			ExitApp
 		}
-
 	}
 
 	toggleCaliper(*) {
@@ -86,7 +85,7 @@ MainGUI() {
 
 	btnCalibrate(*) {
 		if (calArray.Length < 2) {
-			MsgBox("Need to draw out caliper to measure")
+			MsgBox("Need to draw out calipers first!")
 			return
 		}
 		Calibrate()
