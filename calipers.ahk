@@ -28,7 +28,7 @@ createLayeredWindow() {
 	global GdipOBJ
 
 	GdipOBJ := Layered_Window_SetUp(4,scr.X,scr.Y,scr.W,scr.H)
-	GdipOBJ.Pen := New_Pen("FF0000",,1)
+	GdipOBJ.Pen := New_Pen("FF0000",,2)
 	GdipOBJ.PenMarch := New_Pen("ff4000",,1)
 	return
 }
