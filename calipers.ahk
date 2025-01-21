@@ -28,7 +28,7 @@ createLayeredWindow() {
 	global GdipOBJ
 
 	GdipOBJ := Layered_Window_SetUp(4,scr.X,scr.Y,scr.W,scr.H)
-	GdipOBJ.Pen := New_Pen("FF0000",,2)
+	GdipOBJ.Pen := New_Pen("FF0000",,1)
 	GdipOBJ.PenMarch := New_Pen("ff4000",,1)
 	return
 }
@@ -103,7 +103,9 @@ mouseCoord() {
 	dy := my-lastY
 	mLast := {X:mx,Y:my}
 
-	return {X:mx,Y:my,lastX:lastX,lastY:lastY,dx:dx,dy:dy}
+	return {X:mx,Y:my, 
+			lastX:lastX,lastY:lastY, 
+			dx:dx,dy:dy}
 }
 
 ; Plunk new caliper line at last mouse position
