@@ -172,6 +172,28 @@ drawHline(x1,x2,y) {
 	Return
 }
 
+#HotIf (calState.Draw=false) 
+^LButton::
+{
+	clickCaliper()
+	Return
+}
+
+#HotIf (calState.Move=true)
+LButton Up::
+^LButton Up::
+{
+	; moveRelease()
+	Return
+}
+
+#HotIf (calState.Draw=true)
+LButton Up::
+^LButton Up::
+{
+	dropCaliper()
+	Return
+}
 
 Layered_Window_SetUp(Smoothing,Window_X,Window_Y,Window_W,Window_H,Window_Name:=1,Window_Options:="") {
 	Layered:={}
