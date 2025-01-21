@@ -64,7 +64,7 @@ MainGUI() {
 	}
 
 	newCaliper(*) {
-		calArray := {}
+		calArray := []
 		Gdip_GraphicsClear(GdipOBJ.G)
 		clickCaliper()
 		return	
