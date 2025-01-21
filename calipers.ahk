@@ -269,10 +269,10 @@ Calibrate() {
 
 	cWin := Gui()
 	cWin.AddText("w200 Center","Select calibration measurement")
-	cWin.AddButton("w200","1000 ms (good)").OnEvent("Click",c1000)
-	cWin.AddButton("w200","2000 ms (better)").OnEvent("Click",c2000)
-	cWin.AddButton("w200","3000 ms (best)").OnEvent("Click",c3000)
-	cWin.AddButton("w200","Other").OnEvent("Click",cOther)
+	cWin.AddButton("w200","1000 ms (good)").OnEvent("Click",cBtnClicked)
+	cWin.AddButton("w200","2000 ms (better)").OnEvent("Click",cBtnClicked)
+	cWin.AddButton("w200","3000 ms (best)").OnEvent("Click",cBtnClicked)
+	cWin.AddButton("w200","Other").OnEvent("Click",cBtnClicked)
 	cWin.Title := "Calibrate"
 	cWin.OnEvent("Close",cWinClose)
 	cWin.Opt("+AlwaysOnTop -MaximizeBox -MinimizeBox")
@@ -287,23 +287,22 @@ Calibrate() {
 		scaleTooltip(dx) 
 	}
 	Return
+
+	cBtnClicked(Button,*) {
+		x := Button.Text
+		Switch Button.Text {
+		case "1000": 
+			ms := 1000
+		case "2000": 
+			ms := 2000
+		case "3000": 
+			ms := 3000
+		case "Other":
+		Default:   
+		}
+		cWin.Destroy()
+	}
 	
-	c1000(*) {
-		ms:=1000
-		cWin.Destroy()
-	}
-	c2000(*) {
-		ms:=2000
-		cWin.Destroy()
-	}
-	c3000(*) {
-		ms:=3000
-		cWin.Destroy()
-	}
-	cOther(*) {
-		MsgBox("Other")
-		cWin.Destroy()
-	}
 	cWinClose(*) {
 		return
 	}
