@@ -282,6 +282,8 @@ Calibrate() {
 	if (ms) {
 		dx := Abs(calArray[1].X - calArray[2].X)
 		scale := dx/ms
+		MouseMove(mLast.X,mLast.Y)
+		scaleTooltip(dx) 
 	}
 	Return
 	
