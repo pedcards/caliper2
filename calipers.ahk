@@ -158,8 +158,9 @@ clickCaliper() {
 			Case 2:
 				calArray.RemoveAt(best)													; Release this position, makes live
 
-			Default:
-				Return																	; Not close, ignore
+			Default:																	; Clicked on H bar
+				calState.Move := true
+				SetTimer(moveCaliper,calState.refresh)
 		}
 	}
 
@@ -357,7 +358,7 @@ WM_LBUTTONDOWN(wParam, lParam, msg, hwnd)
 WM_LBUTTONUP(wParam, lParam, msg, hwnd)
 {
 	if (calState.Move=true) {															; Moving calipers release
-		; moveRelease()
+		moveRelease()
 		return
 	}
 	if (calState.Draw=true) {															; Dragging caliper release
