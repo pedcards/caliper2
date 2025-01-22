@@ -31,15 +31,6 @@ OnExit ExitFunc
 
 ;--- FUNCTIONS FOLLOW ------------------------------------------------------------------
 
-createLayeredWindow() {
-	global GdipOBJ
-
-	GdipOBJ := Layered_Window_SetUp(4,scr.X,scr.Y,scr.W,scr.H)
-	GdipOBJ.Pen := New_Pen("FF0000",,2)
-	GdipOBJ.PenMarch := New_Pen("ff4000",,1)
-	return
-}
-
 MainGUI() {
 	global GdipOBJ, calArray, calState, phase
 
@@ -343,6 +334,15 @@ WM_LBUTTONUP(wParam, lParam, msg, hwnd)
 		dropCaliper()
 		return
 	}
+	return
+}
+
+createLayeredWindow() {
+	global GdipOBJ
+
+	GdipOBJ := Layered_Window_SetUp(4,scr.X,scr.Y,scr.W,scr.H)
+	GdipOBJ.Pen := New_Pen("FF0000",,2)
+	GdipOBJ.PenMarch := New_Pen("ff4000",,1)
 	return
 }
 
