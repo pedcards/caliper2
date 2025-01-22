@@ -237,7 +237,7 @@ drawVline(X) {
 	Return
 }
 
-; Draw horizontal line from X1-X2, at YI
+; Draw horizontal line from X1-X2, at Y
 drawHline(x1,x2,y) {
 	global GdipOBJ
 	
