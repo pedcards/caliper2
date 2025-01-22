@@ -332,7 +332,7 @@ scaleTooltip(dx) {
 ; Check if any caliper lines within threshold distance, return calArray keynum
 FindClosest(mx,my) {
 	global calArray
-	threshold := 3
+	threshold := 2
 	
 	for key,val in calArray {
 		if Abs(val.X-mx) < threshold {
