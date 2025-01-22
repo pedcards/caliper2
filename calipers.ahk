@@ -15,6 +15,7 @@ scr:={X: 0 ,Y: 0 ,W: A_ScreenWidth, H: A_ScreenHeight }									; Screen dimensi
 calState:={
 		Active:0,																		; Calipers ACTIVE
 		Draw:0,																			; DRAW mode
+		Drag:0,																			; DRAG L mode
 		Move:0,																			; MOVE mode
 		March:0}																		; MARCH mode
 calArray := []																			; Array of X positions
@@ -147,8 +148,8 @@ clickCaliper() {
 		Switch best
 		{
 			Case 1:
-				calState.Move := true
-				SetTimer(moveCaliper, 50)
+				calState.Drag := true
+				SetTimer(dragLcaliper, 50)
 				Return
 			Case 2:
 				calArray.RemoveAt(best)													; Release this position, makes live
@@ -243,6 +244,22 @@ drawHline(x1,x2,y) {
 	
 	Gdip_DrawLine(GdipOBJ.G, GdipOBJ.Pen, x1, y, x2, y)
 	Return
+}
+
+; Move the Left caliper
+dragLcaliper() {
+	global GdipOBJ, calArray, mLast, scr
+
+	mPos := mouseCoord()
+
+	calArray[1].X := mPos.X
+	calArray[1].Y := mPos.Y
+
+	drawCaliper()
+	drawHline(calArray[1].x,calArray[2].x,mPos.Y)
+	UpdateLayeredWindow(GdipOBJ.hwnd, GdipOBJ.hdc,scr.X,scr.Y,scr.W,scr.H)				; Refresh viewport
+
+	return
 }
 
 moveCaliper() {
