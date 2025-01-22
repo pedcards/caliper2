@@ -85,6 +85,53 @@ MainGUI() {
 		Calibrate()
 	}
 }
+
+; Calibration GUI to calculate scale
+Calibrate() {
+	global calArray, scale
+
+	cWin := Gui()
+	cWin.AddText("w200 Center","Select calibration measurement")
+	cWin.AddButton("w200","1000 ms (good)").OnEvent("Click",cBtnClicked)
+	cWin.AddButton("w200","2000 ms (better)").OnEvent("Click",cBtnClicked)
+	cWin.AddButton("w200","3000 ms (best)").OnEvent("Click",cBtnClicked)
+	cWin.AddButton("w200","Other").OnEvent("Click",cBtnClicked)
+	cWin.Title := "Calibrate"
+	cWin.OnEvent("Close",cWinClose)
+	cWin.Opt("+AlwaysOnTop -MaximizeBox -MinimizeBox")
+	cWin.Show("Center Autosize")
+	ms := 0
+
+	WinWaitClose("Calibrate")
+	if (ms) {
+		dx := Abs(calArray[1].X - calArray[2].X)
+		scale := dx/ms
+		MouseMove(mLast.X,mLast.Y)
+		scaleTooltip(dx) 
+	}
+	Return
+
+	cBtnClicked(Button,*) {
+		x := Button.Text
+		Switch {
+			case x~="1000": 
+				ms := 1000
+			case x~="2000": 
+				ms := 2000
+			case x~="3000": 
+				ms := 3000
+			case x~="Other":
+				ms := InputBox("Enter time (ms)","Other duration").Value
+			Default:   
+		}
+		cWin.Destroy()
+	}
+	
+	cWinClose(*) {
+		return
+	}
+}
+
 ;#region === CALIPER FUNCTIONS =========================================================
 
 ; Start drawing caliper line based on lines present
@@ -254,52 +301,6 @@ scaleTooltip(dx) {
 			? dx " px" 
 			: ms " ms`n" bpm " bpm") 
 	Return
-}
-
-; Calibration GUI to calculate scale
-Calibrate() {
-	global calArray, scale
-
-	cWin := Gui()
-	cWin.AddText("w200 Center","Select calibration measurement")
-	cWin.AddButton("w200","1000 ms (good)").OnEvent("Click",cBtnClicked)
-	cWin.AddButton("w200","2000 ms (better)").OnEvent("Click",cBtnClicked)
-	cWin.AddButton("w200","3000 ms (best)").OnEvent("Click",cBtnClicked)
-	cWin.AddButton("w200","Other").OnEvent("Click",cBtnClicked)
-	cWin.Title := "Calibrate"
-	cWin.OnEvent("Close",cWinClose)
-	cWin.Opt("+AlwaysOnTop -MaximizeBox -MinimizeBox")
-	cWin.Show("Center Autosize")
-	ms := 0
-
-	WinWaitClose("Calibrate")
-	if (ms) {
-		dx := Abs(calArray[1].X - calArray[2].X)
-		scale := dx/ms
-		MouseMove(mLast.X,mLast.Y)
-		scaleTooltip(dx) 
-	}
-	Return
-
-	cBtnClicked(Button,*) {
-		x := Button.Text
-		Switch {
-			case x~="1000": 
-				ms := 1000
-			case x~="2000": 
-				ms := 2000
-			case x~="3000": 
-				ms := 3000
-			case x~="Other":
-				ms := InputBox("Enter time (ms)","Other duration").Value
-			Default:   
-		}
-		cWin.Destroy()
-	}
-	
-	cWinClose(*) {
-		return
-	}
 }
 
 ; Check if any caliper lines within threshold distance, return calArray keynum
