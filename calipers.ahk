@@ -24,7 +24,8 @@ scale := ""																				; Multiplier for calibration
 createLayeredWindow()
 MainGUI()
 
-OnMessage(0x201, WM_LBUTTONDOWN)														; for future detection of LMB
+OnMessage(0x201, WM_LBUTTONDOWN)														; LMB press
+OnMessage(0x202, WM_LBUTTONUP)															; LMB release
 
 OnExit ExitFunc
 
@@ -321,37 +322,28 @@ FindClosest(mx,my) {
 	Return
 }
 
-#HotIf (calState.Draw=false) 
-^LButton::
-{
-	clickCaliper()
-	Return
-}
-
-#HotIf (calState.Move=true)
-LButton Up::
-^LButton Up::
-{
-	; moveRelease()
-	Return
-}
-
-#HotIf (calState.Draw=true)
-LButton Up::
-^LButton Up::
-{
-	dropCaliper()
-	Return
-}
-
 WM_LBUTTONDOWN(wParam, lParam, msg, hwnd)
 {
-	; PostMessage 0xA1, 2
 	if (calArray.Length < 2) {															; No stamped caliper exists
 		return
-	} else {
+	} 
+	if (calState.Draw=false) {															; Not drawing? Let's draw/drag!
 		clickCaliper()
 	}
+	return
+}
+
+WM_LBUTTONUP(wParam, lParam, msg, hwnd)
+{
+	if (calState.Move=true) {															; Moving calipers release
+		; moveRelease()
+		return
+	}
+	if (calState.Draw=true) {															; Dragging caliper release
+		dropCaliper()
+		return
+	}
+	return
 }
 
 Layered_Window_SetUp(Smoothing,Window_X,Window_Y,Window_W,Window_H,Window_Name:=1,Window_Options:="") {
