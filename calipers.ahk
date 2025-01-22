@@ -340,9 +340,13 @@ FindClosest(mx,my) {
 
 WM_LBUTTONDOWN(wParam, lParam, msg, hwnd)
 {
-	if (calArray.Length < 2) {															; No stamped caliper exists
+	MouseGetPos(,,&ui,&mb)
+	if (ui=phase.hwnd) {
 		return
-	} 
+	}
+	if (mb~="Button") {
+		return
+	}
 	if (calState.Draw=false) {															; Not drawing? Let's draw/drag!
 		clickCaliper()
 	}
