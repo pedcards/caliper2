@@ -73,6 +73,8 @@ MainGUI() {
 		} else {
 			UpdateLayeredWindow(GdipOBJ.hwnd, GdipOBJ.hdc,scr.X,scr.Y,scr.W,scr.H)
 			ToolTip()
+			phase["March"].Enabled := false
+			phase["Calibrate"].Enabled := false
 		}
 	}
 
