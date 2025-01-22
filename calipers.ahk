@@ -42,11 +42,11 @@ MainGUI() {
 	phase.BackColor := "C2BDBE"
 	phase.Title := "TC Calipers"
 
-	phase.AddCheckbox("vchkNew","Calipers")
+	phase.AddCheckbox(,"Calipers")
 			.OnEvent("Click",toggleCaliper)
-	phase.AddCheckbox("vchkMarch Disabled","March out")
+	phase.AddCheckbox("Disabled","March out")
 			.OnEvent("Click",toggleMarch)
-	phase.AddButton("vbtnCal Disabled","Calibrate")
+	phase.AddButton("Disabled","Calibrate")
 			.OnEvent("Click",btnCalibrate)
 	
 	phase.Show("x" scr.W * 0.8 " w120")
