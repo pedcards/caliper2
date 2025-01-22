@@ -83,10 +83,6 @@ MainGUI() {
 	}
 
 	btnCalibrate(*) {
-		if (calArray.Length < 2) {
-			MsgBox("Need to draw out calipers first!")
-			return
-		}
 		Calibrate()
 	}
 }
@@ -127,7 +123,6 @@ Calibrate() {
 				ms := 3000
 			case x~="Other":
 				ms := InputBox("Enter time (ms)","Other duration").Value
-			Default:   
 		}
 		cWin.Destroy()
 	}
@@ -301,7 +296,6 @@ moveRelease() {
 	global calState
 	calState.Move := false
 	SetTimer(moveCaliper,0)
-	ToolTip()
 	Return
 }
 
@@ -359,11 +353,9 @@ WM_LBUTTONUP(wParam, lParam, msg, hwnd)
 {
 	if (calState.Move=true) {															; Moving calipers release
 		moveRelease()
-		return
 	}
 	if (calState.Draw=true) {															; Dragging caliper release
 		dropCaliper()
-		return
 	}
 	if (calState.Drag=true) {
 		dropCaliper(1)
