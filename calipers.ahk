@@ -282,15 +282,16 @@ Calibrate() {
 
 	cBtnClicked(Button,*) {
 		x := Button.Text
-		Switch Button.Text {
-		case "1000": 
-			ms := 1000
-		case "2000": 
-			ms := 2000
-		case "3000": 
-			ms := 3000
-		case "Other":
-		Default:   
+		Switch {
+			case x~="1000": 
+				ms := 1000
+			case x~="2000": 
+				ms := 2000
+			case x~="3000": 
+				ms := 3000
+			case x~="Other":
+				ms := InputBox("Enter time (ms)","Other duration").Value
+			Default:   
 		}
 		cWin.Destroy()
 	}
