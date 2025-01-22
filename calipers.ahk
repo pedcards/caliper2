@@ -219,6 +219,8 @@ drawCaliper() {
 		calState.Draw := false
 		SetTimer(drawCaliper,0)
 		reorderCalipers()
+		phase["Calibrate"].Enabled := true
+		phase["March"].Enabled := true
 	}
 
 	drawVline(mPos.x)																	; Draw live caliper
