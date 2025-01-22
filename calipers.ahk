@@ -29,7 +29,7 @@ OnMessage(0x202, WM_LBUTTONUP)															; LMB release
 
 OnExit ExitFunc
 
-;--- FUNCTIONS FOLLOW ------------------------------------------------------------------
+;#region === GUI FUNCTIONS =============================================================
 
 MainGUI() {
 	global GdipOBJ, calArray, calState, phase
@@ -85,6 +85,7 @@ MainGUI() {
 		Calibrate()
 	}
 }
+;#region === CALIPER FUNCTIONS =========================================================
 
 ; Start drawing caliper line based on lines present
 ; 	0: Start first line (X1)
@@ -314,6 +315,8 @@ FindClosest(mx,my) {
 	Return
 }
 
+;#region === WINDOWS BUTTON HANDLING =================================================== 
+
 WM_LBUTTONDOWN(wParam, lParam, msg, hwnd)
 {
 	if (calArray.Length < 2) {															; No stamped caliper exists
@@ -337,6 +340,8 @@ WM_LBUTTONUP(wParam, lParam, msg, hwnd)
 	}
 	return
 }
+
+;#region === GDI+ FUNCTIONS ============================================================
 
 createLayeredWindow() {
 	global GdipOBJ
@@ -384,5 +389,5 @@ ExitFunc(ExitReason, ExitCode)
    Gdip_Shutdown(GdipOBJ.Token)
 }
 
-;--- INCLUDES FOLLOW -------------------------------------------------------------------
+;#region === INCLUDES FOLLOW ===========================================================
 #Include Gdip_All.ahk
