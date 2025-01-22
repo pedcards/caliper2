@@ -17,7 +17,9 @@ calState:={
 		Draw:0,																			; DRAW mode
 		Drag:0,																			; DRAG L mode
 		Move:0,																			; MOVE mode
-		March:0}																		; MARCH mode
+		March:0,																		; MARCH mode
+		refresh:30																		; Refresh rate for timers
+		}
 calArray := []																			; Array of X positions
 mLast := {X:0,Y:0}																		; To store mouse X,Y coords
 scale := ""																				; Multiplier for calibration
@@ -149,7 +151,7 @@ clickCaliper() {
 		{
 			Case 1:
 				calState.Drag := true
-				SetTimer(dragLcaliper, 50)
+				SetTimer(dragLcaliper,calState.refresh)
 				Return
 			Case 2:
 				calArray.RemoveAt(best)													; Release this position, makes live
@@ -160,7 +162,7 @@ clickCaliper() {
 	}
 
 	calState.Draw := true
-	SetTimer(drawCaliper,50)
+	SetTimer(drawCaliper,calState.refresh)
 	return
 }
 
