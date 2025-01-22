@@ -181,9 +181,16 @@ mouseCoord() {
 }
 
 ; Plunk new caliper line at last mouse position
-dropCaliper() {
-	global calArray, mLast
-	calArray.push(mLast)
+dropCaliper(c1:=0) {
+	global calArray, mLast, calState
+	if (c1=1) {
+		calArray[1]:=mLast
+		calState.Drag:=false
+		SetTimer(dragLcaliper,0)
+		scaleTooltip(calArray[2].X-calArray[1].X)
+	} else {
+		calArray.push(mLast)
+	}
 	Return
 }
 	
@@ -355,6 +362,9 @@ WM_LBUTTONUP(wParam, lParam, msg, hwnd)
 	if (calState.Draw=true) {															; Dragging caliper release
 		dropCaliper()
 		return
+	}
+	if (calState.Drag=true) {
+		dropCaliper(1)
 	}
 	return
 }
