@@ -42,11 +42,11 @@ MainGUI() {
 	phase.BackColor := "C2BDBE"
 	phase.Title := "TC Calipers"
 
-	phase.chkNew := phase.AddCheckbox(,"Calipers")
+	phase.AddCheckbox("vchkNew","Calipers")
 			.OnEvent("Click",toggleCaliper)
-	phase.chkMarch := phase.AddCheckbox("Disabled","March out")
+	phase.AddCheckbox("vchkMarch Disabled","March out")
 			.OnEvent("Click",toggleMarch)
-	phase.btnCal := phase.AddButton("","Calibrate")
+	phase.AddButton("vbtnCal Disabled","Calibrate")
 			.OnEvent("Click",btnCalibrate)
 	
 	phase.Show("x" scr.W * 0.8 " w120")
@@ -266,7 +266,7 @@ dragLcaliper() {
 
 	drawCaliper()
 	drawHline(calArray[1].x,calArray[2].x,mPos.Y)
-	UpdateLayeredWindow(GdipOBJ.hwnd, GdipOBJ.hdc,scr.X,scr.Y,scr.W,scr.H)				; Refresh viewport
+	UpdateLayeredWindow(GdipOBJ.hwnd, GdipOBJ.hdc,scr.X,scr.Y,scr.W,scr.H)
 
 	return
 }
