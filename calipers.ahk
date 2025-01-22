@@ -275,38 +275,33 @@ dragLcaliper() {
 	return
 }
 
+; Have grabbed H bar, move calipers together
 moveCaliper() {
-; /*	Have grabbed X1 from dropped caliper
-; */
-; 	global GdipOBJ, calArray, mLast
+	global GdipOBJ, calArray, mLast
 
-; 	MouseGetPos,mx,my
-; 	dx := mx-mLast.X
-; 	dy := my-mLast.Y
-; 	mLast := {X:mx,Y:my}
+	mPos := mouseCoord()
 
-; 	for key in calArray
-; 	{
-; 		calArray[key].X += dx
-; 		calArray[key].Y += dy
-; 	}
+	for key,val in calArray
+	{
+ 		calArray[key].X += mPos.dx
+		calArray[key].Y += mPos.dy
+	}
 
-; 	scaleTooltip(calArray[2].X-calArray[1].X)
-; 	drawCalipers()
-; 	drawHline(calArray[1].x,calArray[2].x,my)
-; 	UpdateLayeredWindow(GdipOBJ.hwnd, GdipOBJ.hdc)
+	scaleTooltip(calArray[2].X-calArray[1].X)
+	buildCalipers()
+	drawHline(calArray[1].x,calArray[2].x,mPos.y)
+	UpdateLayeredWindow(GdipOBJ.hwnd, GdipOBJ.hdc)
 
-; 	Return
+	Return
 }
-	
+
+; Drop the set of calipers being moved
 moveRelease() {
-; /*	Drop the set of calipers being moved
-; */
-; 	global active_Move
-; 	active_Move=0
-; 	SetTimer, moveCaliper, Off
-; 	ToolTip
-; 	Return
+	global calState
+	calState.Move := false
+	SetTimer(moveCaliper,0)
+	ToolTip()
+	Return
 }
 
 ; Make sure that X1 always smaller than X2
