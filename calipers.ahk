@@ -148,14 +148,14 @@ clickCaliper() {
 		{
 			Case 1:
 				calState.Drag := true
-				SetTimer(dragLcaliper,calState.refresh)
+				SetTimer(moveLcaliper,calState.refresh)
 				Return
 			Case 2:
 				calArray.RemoveAt(best)													; Release this position, makes live
 
 			Default:																	; Clicked on H bar
 				calState.Move := true
-				SetTimer(moveCaliper,calState.refresh)
+				SetTimer(moveCalipers,calState.refresh)
 		}
 	}
 
@@ -186,7 +186,7 @@ dropCaliper(c1:=0) {
 	if (c1=1) {
 		calArray[1]:=mLast
 		calState.Drag:=false
-		SetTimer(dragLcaliper,0)
+		SetTimer(moveLcaliper,0)
 		scaleTooltip(calArray[2].X-calArray[1].X)
 	} else {
 		calArray.push(mLast)
@@ -256,7 +256,7 @@ drawHline(x1,x2,y) {
 }
 
 ; Move the Left caliper
-dragLcaliper() {
+moveLcaliper() {
 	global GdipOBJ, calArray, mLast, scr
 
 	mPos := mouseCoord()
@@ -272,7 +272,7 @@ dragLcaliper() {
 }
 
 ; Have grabbed H bar, move calipers together
-moveCaliper() {
+moveCalipers() {
 	global GdipOBJ, calArray, mLast
 
 	mPos := mouseCoord()
@@ -295,7 +295,7 @@ moveCaliper() {
 moveRelease() {
 	global calState
 	calState.Move := false
-	SetTimer(moveCaliper,0)
+	SetTimer(moveCalipers,0)
 	Return
 }
 
