@@ -1,7 +1,6 @@
 /*  Calipers
 	Portable AHK2 based tool for on-screen measurements.
 	"Auto calibration" scans for vertical lines.
-	"Auto level" scans for horizontal lines.
 	Calculations
 	March-out with drag of any line
 */
@@ -202,7 +201,7 @@ drawCaliper() {
 	mPos := mouseCoord()
 
 	if (calState.March=true) {
-
+		calMarch()
 	}
 
 	buildCalipers()
@@ -320,6 +319,33 @@ scaleTooltip(dx) {
 	ToolTip((scale="") 
 			? dx " px" 
 			: ms " ms`n" bpm " bpm") 
+	Return
+}
+
+; March out caliper lines relative to X1-X2
+calMarch(grip:=2) {
+	global calArray, GdipOBJ, calState, mLast
+
+	if (calArray.Length < 2) {
+		Return
+	}
+	lastX := mLast.X																	; last known position
+	fullX := lastX-calArray[1].X														; distance from X1
+	steps := grip-1																		; divisor
+	dx := fullX/steps																	; dx between each caliper
+
+	calArray.RemoveAt(2, calArray.Length - 1)											; clear everything above X1
+
+	while (lastX < GdipOBJ.W) {															; add calipers to the right
+		lastX += dx
+		calArray.Push({X:lastX})
+	}
+	lastX := calArray[1].X																; add calipers to the left
+	while (lastX > GdipOBJ.X) {
+		lastX -= dx
+		calArray.Push({X:lastX})
+	}
+
 	Return
 }
 
