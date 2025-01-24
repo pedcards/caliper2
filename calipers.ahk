@@ -348,13 +348,9 @@ WM_LBUTTONUP(wParam, lParam, msg, hwnd)
 	if (calState.Move=true) {															; Moving calipers release
 		moveRelease()
 	}
-	if (calState.Draw=true) {															; Dragging caliper release
+	if (calState.Drag=true) {															; Dragging caliper release
 		dropCaliper()
 	}
-	if (calState.Drag=true) {
-		dropCaliper(1)
-	}
-	return
 }
 
 WM_SETCURSOR(wp, *) {
