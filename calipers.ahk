@@ -28,6 +28,7 @@ MainGUI()
 
 OnMessage(0x201, WM_LBUTTONDOWN)														; LMB press
 OnMessage(0x202, WM_LBUTTONUP)															; LMB release
+OnMessage(0x020, WM_SETCURSOR)
 
 OnExit ExitFunc
 
@@ -394,6 +395,21 @@ WM_LBUTTONUP(wParam, lParam, msg, hwnd)
 	}
 	return
 }
+
+WM_SETCURSOR(wp, *) {
+    if (wp != GdipOBJ.hwnd) {
+		return
+	}
+
+    return DllCall('SetCursor', 'Ptr', GdipOBJ.compassCursor)
+    
+}
+
+LoadCursor(cursorId) {
+    static IMAGE_CURSOR := 2, flags := (LR_DEFAULTSIZE := 0x40) | (LR_SHARED := 0x8000)
+    return DllCall('LoadImage', 'Ptr', 0, 'UInt', cursorId, 'UInt', IMAGE_CURSOR,
+                                'Int', 0, 'Int', 0, 'UInt', flags, 'Ptr')
+}
 ;#endregion
 
 ;#region === GDI+ FUNCTIONS ============================================================
@@ -404,6 +420,9 @@ createLayeredWindow() {
 	GdipOBJ := Layered_Window_SetUp(4,scr.X,scr.Y,scr.W,scr.H)
 	GdipOBJ.Pen := New_Pen("FF0000",,2)
 	GdipOBJ.PenMarch := New_Pen("ff4000",,1)
+	GdipOBJ.sizeCursor := LoadCursor(IDC_SIZEWE := 32644)
+	GdipOBJ.compassCursor := LoadCursor(IDC_SIZEWE := 32646)
+
 	return
 }
 
