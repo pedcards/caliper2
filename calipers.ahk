@@ -13,7 +13,7 @@ CoordMode("Mouse","Screen")
 scr:={X: 0 ,Y: 0,
 		W: A_ScreenWidth, H: A_ScreenHeight,											; Screen dimensions
 		sizeCursor: LoadCursor(IDC_SIZEWE := 32644),									; and cursor ptrs
-		compassCursor: LoadCursor(IDC_SIZEWE := 32646)
+		compassCursor: LoadCursor(IDC_SIZEALL := 32646)
 	}
 
 calState:={
