@@ -333,12 +333,12 @@ calMarch(grip:=2) {
 }
 
 ; Check if any caliper lines within threshold distance, return calArray keynum
-FindClosest(mx,my) {
+FindClosest(mx) {
 	global calArray
 	threshold := 2
 	
 	for key,val in calArray {
-		if Abs(val.X-mx) < threshold {
+		if Abs(val-mx) < threshold {
 			Return key																	; Return early if hit
 		}
 	}
