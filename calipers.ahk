@@ -110,10 +110,10 @@ Calibrate() {
 
 	WinWaitClose("Calibrate")
 	if (ms) {
-		dx := Abs(calArray[1].X - calArray[2].X)
+		dx := Abs(calArray[1] - calArray[2])
 		scale := dx/ms
-		MouseMove(calArray[2].X,calArray[2].Y)
-		scaleTooltip(dx) 
+		MouseMove(calArray[2],mLast.Y)
+		scaleTooltip() 
 	}
 	Return
 
