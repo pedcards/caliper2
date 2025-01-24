@@ -356,10 +356,7 @@ FindClosest(mx) {
 WM_LBUTTONDOWN(wParam, lParam, msg, hwnd)
 {
 	MouseGetPos(,,&ui,&mb)
-	if (ui=phase.hwnd) {
-		return
-	}
-	if (mb~="Button") {
+	if (ui != GdipOBJ.hwnd) {
 		return
 	}
 	if (calState.Draw=false) {															; Not drawing? Let's draw/drag!
