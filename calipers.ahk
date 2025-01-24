@@ -21,7 +21,6 @@ calState:={
 		Drag:0,																			; DRAG mode
 		Move:0,																			; MOVE mode
 		March:0,																		; MARCH mode
-		Best:"",
 		refresh:30																		; Refresh rate for timers
 		}
 calArray := []																			; Array of X positions
@@ -165,9 +164,8 @@ clickCaliper() {
 	global calState
 
 	mPos := mouseCoord()
-	if (best:=FindClosest(mPos.x)) {
+	if (FindClosest(mPos.x)) {
 		calState.Drag := true
-		calState.Best := best
 		SetTimer(dragCaliper,calState.refresh)
 	} else {
 		calstate.Move := true
@@ -193,15 +191,15 @@ mouseCoord() {
 
 ; Drag a caliper V line
 dragCaliper() {
-	global calArray, calState
+	global calArray, calState, mLast
 
+	grip:=FindClosest(mLast.X)
 	mPos := mouseCoord()
-	grip := calState.Best																; Index of calArray being grabbed
 
 	if (grip>2) {
 		dx := calArray[2]-calArray[1]
-		fullX := calArray[grip] - calArray[1]
-		newX := mPos.X - calArray[1]
+		fullX := Abs(calArray[grip] - calArray[1])
+		newX := Abs(mPos.X - calArray[1])
 		factor := newX/fullX
 		calArray[2] := (dx*factor) + calArray[1]
 	} else {
