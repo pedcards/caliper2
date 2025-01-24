@@ -158,26 +158,15 @@ newCalipers() {
 clickCaliper() {
 	global GdipOBJ, calState, calArray
 
-	if (calArray.Length >= 2) {															; Both calipers present, grab something
-		mPos := mouseCoord()
-		best:=FindClosest(mPos.x,mPos.y)
-		Switch best
-		{
-			Case 1:
-				calState.Drag := true
-				SetTimer(moveLcaliper,calState.refresh)
-				Return
-			Case 2:
-				calArray.RemoveAt(best)													; Release this position, makes live
-
-			Default:																	; Clicked on H bar
-				calState.Move := true
-				SetTimer(moveCalipers,calState.refresh)
-		}
+	mPos := mouseCoord()
+	if (best:=FindClosest(mPos.x)) {
+		calState.Drag := true
+		SetTimer(dragCaliper(best),calState.refresh)
+	} else {
+		calstate.Move := true
+		SetTimer(moveCalipers,calState.refresh)
 	}
 
-	calState.Draw := true
-	SetTimer(drawCaliper,calState.refresh)
 	return
 }
 
