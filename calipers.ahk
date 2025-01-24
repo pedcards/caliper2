@@ -173,18 +173,6 @@ clickCaliper() {
 	return
 }
 
-dragCaliper() {
-	global calArray, calState
-
-	mPos := mouseCoord()
-	calArray[calState.Best] := mPos.X
-
-	scaleTooltip()
-	drawCalipers()
-
-	return	
-}
-
 ; Get mouse coords, last coords, and dx/dy
 mouseCoord() {
 	global mLast
@@ -196,9 +184,19 @@ mouseCoord() {
 	dy := my-lastY
 	mLast := {X:mx,Y:my}
 
-	return {X:mx,Y:my, 
-			lastX:lastX,lastY:lastY, 
-			dx:dx,dy:dy}
+	return {X:mx,Y:my, dx:dx,dy:dy}
+}
+
+dragCaliper() {
+	global calArray, calState
+
+	mPos := mouseCoord()
+	calArray[calState.Best] := mPos.X
+
+	scaleTooltip()
+	drawCalipers()
+
+	return	
 }
 
 ; Plunk new caliper line at last mouse position
