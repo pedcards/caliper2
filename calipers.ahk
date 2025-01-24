@@ -212,7 +212,11 @@ dropCaliper() {
 
 ; Create caliper lines based on prev lines and new position
 drawCalipers() {
-	global GdipOBJ, calArray, mLast, scr
+	global GdipOBJ, calArray, calstate, mLast, scr
+
+	if (calState.March=true) {
+		calMarch()
+	}
 
 	Gdip_GraphicsClear(GdipOBJ.G)														; Clear bitmap
 	Loop calArray.Length																; Draw saved V calipers
