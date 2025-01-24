@@ -18,10 +18,10 @@ scr:={X: 0 ,Y: 0,
 
 calState:={
 		Active:0,																		; Calipers ACTIVE
-		Draw:0,																			; DRAW mode
-		Drag:0,																			; DRAG L mode
+		Drag:0,																			; DRAG mode
 		Move:0,																			; MOVE mode
 		March:0,																		; MARCH mode
+		Best:"",
 		refresh:30																		; Refresh rate for timers
 		}
 calArray := []																			; Array of X positions
