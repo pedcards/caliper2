@@ -230,10 +230,10 @@ drawVline(X) {
 }
 
 ; Draw horizontal line from X1-X2, at Y
-drawHline(x1,x2,y) {
-	global GdipOBJ
+drawHline(y) {
+	global GdipOBJ, calArray
 	
-	Gdip_DrawLine(GdipOBJ.G, GdipOBJ.Pen, x1, y, x2, y)
+	Gdip_DrawLine(GdipOBJ.G, GdipOBJ.Pen, calArray[1], y, calArray[2], y)
 	Return
 }
 
