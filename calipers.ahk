@@ -87,6 +87,9 @@ MainGUI() {
 
 	toggleMarch(*) {
 		calState.March := !calState.March
+		if (calArray.Length>2) {
+			calArray.RemoveAt(3, calArray.Length - 2)
+		}
 		drawCalipers()
 	}
 
@@ -303,7 +306,7 @@ calMarch() {
 	calArray.RemoveAt(2, calArray.Length - 1)											; clear everything above X1
 
 	lastX := calArray[1]
-	while (lastX < scr.W) {															; add calipers to the right
+	while (lastX < scr.W) {																; add calipers to the right
 		lastX += dx
 		calArray.Push(lastX)
 	}
