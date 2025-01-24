@@ -205,49 +205,19 @@ dropCaliper(c1:=0) {
 	}
 	Return
 }
-	
+
 ; Create caliper lines based on prev lines and new position
-; Add Hline if more than one line on the field
-drawCaliper() {
+drawCalipers() {
 	global GdipOBJ, calState, calArray, mLast, scr
 
-	mPos := mouseCoord()
-
-	if (calState.March=true) {
-		calMarch()
+	Gdip_GraphicsClear(GdipOBJ.G)														; Clear bitmap
+	Loop calArray.Length																; Draw saved V calipers
+	{
+		drawVline(calArray[A_Index])
 	}
-
-	buildCalipers()
-
-	num := calArray.Length
-	if (num) {																			; Draw Hline when first line dropped
-		dx := Abs(calArray[1].X - mPos.x)
-		drawHline(calArray[1].x,mPos.x,mPos.y)
-		scaleTooltip(dx)
-	}
-	if (num=2) {																		; Done when second line drops
-		calState.Draw := false
-		SetTimer(drawCaliper,0)
-		reorderCalipers()
-		phase["Calibrate"].Enabled := true
-		phase["March"].Enabled := true
-	}
-
-	drawVline(mPos.x)																	; Draw live caliper
+	drawHline(mLast.Y)
 	UpdateLayeredWindow(GdipOBJ.hwnd, GdipOBJ.hdc,scr.X,scr.Y,scr.W,scr.H)				; Refresh viewport
 
-	return
-}
-
-; Draw all calipers lines from calArray
-buildCalipers() {
-	global GdipOBJ, calArray
-
-	Gdip_GraphicsClear(GdipOBJ.G)
-	Loop calArray.Length																; Draw saved calipers
-	{
-		drawVline(calArray[A_Index].X)
-	}
 	Return
 }
 
