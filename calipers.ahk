@@ -381,9 +381,12 @@ WM_SETCURSOR(wp, *) {
     if (wp != GdipOBJ.hwnd) {
 		return
 	}
-
-    return DllCall('SetCursor', 'Ptr', GdipOBJ.compassCursor)
-    
+	MouseGetPos(&mx)
+	if (FindClosest(mx)) {																; Matches V caliper
+		return DllCall('SetCursor', 'Ptr', GdipOBJ.sizeCursor)
+	} else {																			; Otherwise H bar
+		return DllCall('SetCursor', 'Ptr', GdipOBJ.compassCursor)
+	}
 }
 
 LoadCursor(cursorId) {
