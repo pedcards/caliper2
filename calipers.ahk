@@ -130,6 +130,7 @@ Calibrate() {
 		return
 	}
 }
+;#endregion
 
 ;#region === CALIPER FUNCTIONS =========================================================
 
@@ -361,6 +362,7 @@ FindClosest(mx,my) {
 	}
 	Return
 }
+;#endregion
 
 ;#region === WINDOWS BUTTON HANDLING =================================================== 
 
@@ -392,6 +394,7 @@ WM_LBUTTONUP(wParam, lParam, msg, hwnd)
 	}
 	return
 }
+;#endregion
 
 ;#region === GDI+ FUNCTIONS ============================================================
 
@@ -440,6 +443,7 @@ ExitFunc(ExitReason, ExitCode)
    ; gdi+ may now be shutdown on exiting the program
    Gdip_Shutdown(GdipOBJ.Token)
 }
+;#endregion
 
 ;#region === INCLUDES FOLLOW ===========================================================
 #Include Gdip_All.ahk
