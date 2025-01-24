@@ -65,11 +65,11 @@ MainGUI() {
 
 	toggleCaliper(*) {
 		calState.Active := !calState.Active
-		calArray := []
-		Gdip_GraphicsClear(GdipOBJ.G)
+		calArray := []																	; Whether opening or closing
+		Gdip_GraphicsClear(GdipOBJ.G)													; clear calArray and bitmap
 
 		if (calState.Active) {
-			clickCaliper()
+			newCalipers()
 		} else {
 			UpdateLayeredWindow(GdipOBJ.hwnd, GdipOBJ.hdc,scr.X,scr.Y,scr.W,scr.H)
 			ToolTip()
@@ -135,10 +135,21 @@ Calibrate() {
 
 ;#region === CALIPER FUNCTIONS =========================================================
 
-; Start drawing caliper line based on lines present
-; 	0: Start first line (X1)
-; 	1: Start second line
-; 	2+: Both lines present, grab something
+; Create new set of calipers
+newCalipers() {
+	global scr, mLast, calArray
+
+	midX := scr.W//2
+	midY := scr.H//2
+	calArray.InsertAt(1,midX-50,midX+50)
+	mLast.Y := midY
+
+	drawCalipers()
+
+	return
+}
+
+; Drag or move calipers when click on V or H line
 clickCaliper() {
 	global GdipOBJ, calState, calArray
 
