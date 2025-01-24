@@ -191,11 +191,22 @@ mouseCoord() {
 	return {X:mx,Y:my, dx:dx,dy:dy}
 }
 
+; Drag a caliper V line
 dragCaliper() {
 	global calArray, calState
 
 	mPos := mouseCoord()
-	calArray[calState.Best] := mPos.X
+	grip := calState.Best																; Index of calArray being grabbed
+
+	if (grip>2) {
+		dx := calArray[2]-calArray[1]
+		fullX := calArray[grip] - calArray[1]
+		newX := mPos.X - calArray[1]
+		factor := newX/fullX
+		calArray[2] := (dx*factor) + calArray[1]
+	} else {
+		calArray[grip] := mPos.X
+	}
 
 	scaleTooltip()
 	drawCalipers()
