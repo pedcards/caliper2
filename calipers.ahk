@@ -163,13 +163,26 @@ clickCaliper() {
 	mPos := mouseCoord()
 	if (best:=FindClosest(mPos.x)) {
 		calState.Drag := true
-		SetTimer(dragCaliper(best),calState.refresh)
+		calState.Best := best
+		SetTimer(dragCaliper,calState.refresh)
 	} else {
 		calstate.Move := true
 		SetTimer(moveCalipers,calState.refresh)
 	}
 
 	return
+}
+
+dragCaliper() {
+	global calArray, calState
+
+	mPos := mouseCoord()
+	calArray[calState.Best] := mPos.X
+
+	scaleTooltip()
+	drawCalipers()
+
+	return	
 }
 
 ; Get mouse coords, last coords, and dx/dy
@@ -189,16 +202,11 @@ mouseCoord() {
 }
 
 ; Plunk new caliper line at last mouse position
-dropCaliper(c1:=0) {
-	global calArray, mLast, calState
-	if (c1=1) {
-		calArray[1]:=mLast
-		calState.Drag:=false
-		SetTimer(moveLcaliper,0)
-		scaleTooltip(calArray[2].X-calArray[1].X)
-	} else {
-		calArray.push(mLast)
-	}
+dropCaliper() {
+	global calState
+
+	calState.Drag:=false
+	SetTimer(dragCaliper,0)
 	Return
 }
 
@@ -231,22 +239,6 @@ drawHline(y) {
 	
 	Gdip_DrawLine(GdipOBJ.G, GdipOBJ.Pen, calArray[1], y, calArray[2], y)
 	Return
-}
-
-; Move the Left caliper
-moveLcaliper() {
-	global GdipOBJ, calArray, mLast, scr
-
-	mPos := mouseCoord()
-
-	calArray[1].X := mPos.X
-	calArray[1].Y := mPos.Y
-
-	drawCaliper()
-	drawHline(calArray[1].x,calArray[2].x,mPos.Y)
-	UpdateLayeredWindow(GdipOBJ.hwnd, GdipOBJ.hdc,scr.X,scr.Y,scr.W,scr.H)
-
-	return
 }
 
 ; Have grabbed H bar, move calipers together
