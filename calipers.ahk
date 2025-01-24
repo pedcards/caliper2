@@ -10,7 +10,12 @@
 #Include %A_ScriptDir%\lib\
 CoordMode("Mouse","Screen")
 
-scr:={X: 0 ,Y: 0 ,W: A_ScreenWidth, H: A_ScreenHeight }									; Screen dimensions
+scr:={X: 0 ,Y: 0,
+		W: A_ScreenWidth, H: A_ScreenHeight,											; Screen dimensions
+		sizeCursor: LoadCursor(IDC_SIZEWE := 32644),									; and cursor ptrs
+		compassCursor: LoadCursor(IDC_SIZEWE := 32646)
+	}
+
 calState:={
 		Active:0,																		; Calipers ACTIVE
 		Draw:0,																			; DRAW mode
@@ -383,9 +388,9 @@ WM_SETCURSOR(wp, *) {
 	}
 	MouseGetPos(&mx)
 	if (FindClosest(mx)) {																; Matches V caliper
-		return DllCall('SetCursor', 'Ptr', GdipOBJ.sizeCursor)
+		return DllCall('SetCursor', 'Ptr', scr.sizeCursor)
 	} else {																			; Otherwise H bar
-		return DllCall('SetCursor', 'Ptr', GdipOBJ.compassCursor)
+		return DllCall('SetCursor', 'Ptr', scr.compassCursor)
 	}
 }
 
@@ -404,8 +409,6 @@ createLayeredWindow() {
 	GdipOBJ := Layered_Window_SetUp(4,scr.X,scr.Y,scr.W,scr.H)
 	GdipOBJ.Pen := New_Pen("FF0000",,2)
 	GdipOBJ.PenMarch := New_Pen("ff4000",,1)
-	GdipOBJ.sizeCursor := LoadCursor(IDC_SIZEWE := 32644)
-	GdipOBJ.compassCursor := LoadCursor(IDC_SIZEWE := 32646)
 
 	return
 }
