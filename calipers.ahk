@@ -40,7 +40,7 @@ OnExit ExitFunc
 ;#region === GUI FUNCTIONS =============================================================
 
 MainGUI() {
-	global GdipOBJ, calArray, calState, phase
+	global GdipOBJ, calArray, calState
 
 	phase := Gui()
 	phase.Opt("-MaximizeBox -MinimizeBox +AlwaysOnTop +ToolWindow")
@@ -144,7 +144,7 @@ Calibrate() {
 
 ; Create new set of calipers
 newCalipers() {
-	global scr, mLast, calArray
+	global scr, calArray, mLast
 
 	midX := scr.W//2
 	midY := scr.H//2
@@ -158,7 +158,7 @@ newCalipers() {
 
 ; Drag or move calipers when click on V or H line
 clickCaliper() {
-	global GdipOBJ, calState, calArray
+	global calState
 
 	mPos := mouseCoord()
 	if (best:=FindClosest(mPos.x)) {
@@ -204,7 +204,7 @@ dropCaliper(c1:=0) {
 
 ; Create caliper lines based on prev lines and new position
 drawCalipers() {
-	global GdipOBJ, calState, calArray, mLast, scr
+	global GdipOBJ, calArray, mLast, scr
 
 	Gdip_GraphicsClear(GdipOBJ.G)														; Clear bitmap
 	Loop calArray.Length																; Draw saved V calipers
@@ -251,7 +251,7 @@ moveLcaliper() {
 
 ; Have grabbed H bar, move calipers together
 moveCalipers() {
-	global GdipOBJ, calArray, mLast
+	global calArray
 
 	mPos := mouseCoord()
 
@@ -269,6 +269,7 @@ moveCalipers() {
 ; Drop the set of calipers being moved
 moveRelease() {
 	global calState
+	
 	calState.Move := false
 	SetTimer(moveCalipers,0)
 	Return
