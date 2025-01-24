@@ -345,13 +345,9 @@ FindClosest(mx) {
 WM_LBUTTONDOWN(wParam, lParam, msg, hwnd)
 {
 	MouseGetPos(,,&ui,&mb)
-	if (ui != GdipOBJ.hwnd) {
-		return
-	}
-	if (calState.Draw=false) {															; Not drawing? Let's draw/drag!
+	if (ui = GdipOBJ.hwnd) {
 		clickCaliper()
 	}
-	return
 }
 
 WM_LBUTTONUP(wParam, lParam, msg, hwnd)
