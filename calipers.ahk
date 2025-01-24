@@ -75,6 +75,8 @@ MainGUI() {
 
 		if (calState.Active) {
 			newCalipers()
+			phase["March"].Enabled := true
+			phase["Calibrate"].Enabled := true
 		} else {
 			UpdateLayeredWindow(GdipOBJ.hwnd, GdipOBJ.hdc,scr.X,scr.Y,scr.W,scr.H)
 			ToolTip()
