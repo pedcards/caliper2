@@ -10,13 +10,18 @@
 #Include %A_ScriptDir%\lib\
 CoordMode("Mouse","Screen")
 
-scr:={X: 0 ,Y: 0 ,W: A_ScreenWidth, H: A_ScreenHeight }									; Screen dimensions
+scr:={X: 0 ,Y: 0,
+		W: A_ScreenWidth, H: A_ScreenHeight,											; Screen dimensions
+		sizeCursor: LoadCursor(IDC_SIZEWE := 32644),									; and cursor ptrs
+		compassCursor: LoadCursor(IDC_SIZEALL := 32646)
+	}
+
 calState:={
 		Active:0,																		; Calipers ACTIVE
-		Draw:0,																			; DRAW mode
-		Drag:0,																			; DRAG L mode
+		Drag:0,																			; DRAG mode
 		Move:0,																			; MOVE mode
 		March:0,																		; MARCH mode
+		Best:"",
 		refresh:30																		; Refresh rate for timers
 		}
 calArray := []																			; Array of X positions
@@ -28,13 +33,14 @@ MainGUI()
 
 OnMessage(0x201, WM_LBUTTONDOWN)														; LMB press
 OnMessage(0x202, WM_LBUTTONUP)															; LMB release
+OnMessage(0x020, WM_SETCURSOR)
 
 OnExit ExitFunc
 
 ;#region === GUI FUNCTIONS =============================================================
 
 MainGUI() {
-	global GdipOBJ, calArray, calState, phase
+	global GdipOBJ, calArray, calState
 
 	phase := Gui()
 	phase.Opt("-MaximizeBox -MinimizeBox +AlwaysOnTop +ToolWindow")
@@ -64,11 +70,13 @@ MainGUI() {
 
 	toggleCaliper(*) {
 		calState.Active := !calState.Active
-		calArray := []
-		Gdip_GraphicsClear(GdipOBJ.G)
+		calArray := []																	; Whether opening or closing
+		Gdip_GraphicsClear(GdipOBJ.G)													; clear calArray and bitmap
 
 		if (calState.Active) {
-			clickCaliper()
+			newCalipers()
+			phase["March"].Enabled := true
+			phase["Calibrate"].Enabled := true
 		} else {
 			UpdateLayeredWindow(GdipOBJ.hwnd, GdipOBJ.hdc,scr.X,scr.Y,scr.W,scr.H)
 			ToolTip()
@@ -88,7 +96,7 @@ MainGUI() {
 
 ; Calibration GUI to calculate scale
 Calibrate() {
-	global calArray, scale
+	global calArray, scale, mLast
 
 	cWin := Gui()
 	cWin.AddText("w200 Center","Select calibration measurement")
@@ -104,10 +112,10 @@ Calibrate() {
 
 	WinWaitClose("Calibrate")
 	if (ms) {
-		dx := Abs(calArray[1].X - calArray[2].X)
+		dx := Abs(calArray[1] - calArray[2])
 		scale := dx/ms
-		MouseMove(calArray[2].X,calArray[2].Y)
-		scaleTooltip(dx) 
+		MouseMove(calArray[2],mLast.Y)
+		scaleTooltip() 
 	}
 	Return
 
@@ -130,37 +138,51 @@ Calibrate() {
 		return
 	}
 }
+;#endregion
 
 ;#region === CALIPER FUNCTIONS =========================================================
 
-; Start drawing caliper line based on lines present
-; 	0: Start first line (X1)
-; 	1: Start second line
-; 	2+: Both lines present, grab something
+; Create new set of calipers
+newCalipers() {
+	global scr, calArray, mLast
+
+	midX := scr.W//2
+	midY := scr.H//2
+	calArray.InsertAt(1,midX-50,midX+50)
+	mLast.Y := midY
+
+	drawCalipers()
+
+	return
+}
+
+; Drag or move calipers when click on V or H line
 clickCaliper() {
-	global GdipOBJ, calState, calArray
+	global calState
 
-	if (calArray.Length >= 2) {															; Both calipers present, grab something
-		mPos := mouseCoord()
-		best:=FindClosest(mPos.x,mPos.y)
-		Switch best
-		{
-			Case 1:
-				calState.Drag := true
-				SetTimer(moveLcaliper,calState.refresh)
-				Return
-			Case 2:
-				calArray.RemoveAt(best)													; Release this position, makes live
-
-			Default:																	; Clicked on H bar
-				calState.Move := true
-				SetTimer(moveCalipers,calState.refresh)
-		}
+	mPos := mouseCoord()
+	if (best:=FindClosest(mPos.x)) {
+		calState.Drag := true
+		calState.Best := best
+		SetTimer(dragCaliper,calState.refresh)
+	} else {
+		calstate.Move := true
+		SetTimer(moveCalipers,calState.refresh)
 	}
 
-	calState.Draw := true
-	SetTimer(drawCaliper,calState.refresh)
 	return
+}
+
+dragCaliper() {
+	global calArray, calState
+
+	mPos := mouseCoord()
+	calArray[calState.Best] := mPos.X
+
+	scaleTooltip()
+	drawCalipers()
+
+	return	
 }
 
 ; Get mouse coords, last coords, and dx/dy
@@ -180,61 +202,26 @@ mouseCoord() {
 }
 
 ; Plunk new caliper line at last mouse position
-dropCaliper(c1:=0) {
-	global calArray, mLast, calState
-	if (c1=1) {
-		calArray[1]:=mLast
-		calState.Drag:=false
-		SetTimer(moveLcaliper,0)
-		scaleTooltip(calArray[2].X-calArray[1].X)
-	} else {
-		calArray.push(mLast)
-	}
+dropCaliper() {
+	global calState
+
+	calState.Drag:=false
+	SetTimer(dragCaliper,0)
 	Return
 }
-	
+
 ; Create caliper lines based on prev lines and new position
-; Add Hline if more than one line on the field
-drawCaliper() {
-	global GdipOBJ, calState, calArray, mLast, scr
+drawCalipers() {
+	global GdipOBJ, calArray, mLast, scr
 
-	mPos := mouseCoord()
-
-	if (calState.March=true) {
-		calMarch()
+	Gdip_GraphicsClear(GdipOBJ.G)														; Clear bitmap
+	Loop calArray.Length																; Draw saved V calipers
+	{
+		drawVline(calArray[A_Index])
 	}
-
-	buildCalipers()
-
-	num := calArray.Length
-	if (num) {																			; Draw Hline when first line dropped
-		dx := Abs(calArray[1].X - mPos.x)
-		drawHline(calArray[1].x,mPos.x,mPos.y)
-		scaleTooltip(dx)
-	}
-	if (num=2) {																		; Done when second line drops
-		calState.Draw := false
-		SetTimer(drawCaliper,0)
-		reorderCalipers()
-		phase["Calibrate"].Enabled := true
-		phase["March"].Enabled := true
-	}
-
-	drawVline(mPos.x)																	; Draw live caliper
+	drawHline(mLast.Y)
 	UpdateLayeredWindow(GdipOBJ.hwnd, GdipOBJ.hdc,scr.X,scr.Y,scr.W,scr.H)				; Refresh viewport
 
-	return
-}
-
-; Draw all calipers lines from calArray
-buildCalipers() {
-	global GdipOBJ, calArray
-
-	Gdip_GraphicsClear(GdipOBJ.G)
-	Loop calArray.Length																; Draw saved calipers
-	{
-		drawVline(calArray[A_Index].X)
-	}
 	Return
 }
 
@@ -247,45 +234,26 @@ drawVline(X) {
 }
 
 ; Draw horizontal line from X1-X2, at Y
-drawHline(x1,x2,y) {
-	global GdipOBJ
+drawHline(y) {
+	global GdipOBJ, calArray
 	
-	Gdip_DrawLine(GdipOBJ.G, GdipOBJ.Pen, x1, y, x2, y)
+	Gdip_DrawLine(GdipOBJ.G, GdipOBJ.Pen, calArray[1], y, calArray[2], y)
 	Return
-}
-
-; Move the Left caliper
-moveLcaliper() {
-	global GdipOBJ, calArray, mLast, scr
-
-	mPos := mouseCoord()
-
-	calArray[1].X := mPos.X
-	calArray[1].Y := mPos.Y
-
-	drawCaliper()
-	drawHline(calArray[1].x,calArray[2].x,mPos.Y)
-	UpdateLayeredWindow(GdipOBJ.hwnd, GdipOBJ.hdc,scr.X,scr.Y,scr.W,scr.H)
-
-	return
 }
 
 ; Have grabbed H bar, move calipers together
 moveCalipers() {
-	global GdipOBJ, calArray, mLast
+	global calArray
 
 	mPos := mouseCoord()
 
 	for key,val in calArray
 	{
- 		calArray[key].X += mPos.dx
-		calArray[key].Y += mPos.dy
+ 		calArray[key] += mPos.dx
 	}
 
-	scaleTooltip(calArray[2].X-calArray[1].X)
-	buildCalipers()
-	drawHline(calArray[1].x,calArray[2].x,mPos.y)
-	UpdateLayeredWindow(GdipOBJ.hwnd, GdipOBJ.hdc)
+	scaleTooltip()
+	drawCalipers()
 
 	Return
 }
@@ -293,6 +261,7 @@ moveCalipers() {
 ; Drop the set of calipers being moved
 moveRelease() {
 	global calState
+	
 	calState.Move := false
 	SetTimer(moveCalipers,0)
 	Return
@@ -311,9 +280,10 @@ reorderCalipers() {
 }
 
 ; Display tooltip measurements
-scaleTooltip(dx) {
-	global scale
+scaleTooltip() {
+	global scale, calArray
 
+	dx := calArray[2]-calArray[1]
 	ms := (scale) ? Round(dx/scale) : ""
 	bpm := (ms) ? Round(60000/ms,1) : ""
 	ToolTip((scale="") 
@@ -350,33 +320,27 @@ calMarch(grip:=2) {
 }
 
 ; Check if any caliper lines within threshold distance, return calArray keynum
-FindClosest(mx,my) {
+FindClosest(mx) {
 	global calArray
 	threshold := 2
 	
 	for key,val in calArray {
-		if Abs(val.X-mx) < threshold {
+		if Abs(val-mx) < threshold {
 			Return key																	; Return early if hit
 		}
 	}
 	Return
 }
+;#endregion
 
 ;#region === WINDOWS BUTTON HANDLING =================================================== 
 
 WM_LBUTTONDOWN(wParam, lParam, msg, hwnd)
 {
 	MouseGetPos(,,&ui,&mb)
-	if (ui=phase.hwnd) {
-		return
-	}
-	if (mb~="Button") {
-		return
-	}
-	if (calState.Draw=false) {															; Not drawing? Let's draw/drag!
+	if (ui = GdipOBJ.hwnd) {
 		clickCaliper()
 	}
-	return
 }
 
 WM_LBUTTONUP(wParam, lParam, msg, hwnd)
@@ -384,14 +348,29 @@ WM_LBUTTONUP(wParam, lParam, msg, hwnd)
 	if (calState.Move=true) {															; Moving calipers release
 		moveRelease()
 	}
-	if (calState.Draw=true) {															; Dragging caliper release
+	if (calState.Drag=true) {															; Dragging caliper release
 		dropCaliper()
 	}
-	if (calState.Drag=true) {
-		dropCaliper(1)
-	}
-	return
 }
+
+WM_SETCURSOR(wp, *) {
+    if (wp != GdipOBJ.hwnd) {
+		return
+	}
+	MouseGetPos(&mx)
+	if (FindClosest(mx)) {																; Matches V caliper
+		return DllCall('SetCursor', 'Ptr', scr.sizeCursor)
+	} else {																			; Otherwise H bar
+		return DllCall('SetCursor', 'Ptr', scr.compassCursor)
+	}
+}
+
+LoadCursor(cursorId) {
+    static IMAGE_CURSOR := 2, flags := (LR_DEFAULTSIZE := 0x40) | (LR_SHARED := 0x8000)
+    return DllCall('LoadImage', 'Ptr', 0, 'UInt', cursorId, 'UInt', IMAGE_CURSOR,
+                                'Int', 0, 'Int', 0, 'UInt', flags, 'Ptr')
+}
+;#endregion
 
 ;#region === GDI+ FUNCTIONS ============================================================
 
@@ -401,6 +380,7 @@ createLayeredWindow() {
 	GdipOBJ := Layered_Window_SetUp(4,scr.X,scr.Y,scr.W,scr.H)
 	GdipOBJ.Pen := New_Pen("FF0000",,2)
 	GdipOBJ.PenMarch := New_Pen("ff4000",,1)
+
 	return
 }
 
@@ -440,6 +420,7 @@ ExitFunc(ExitReason, ExitCode)
    ; gdi+ may now be shutdown on exiting the program
    Gdip_Shutdown(GdipOBJ.Token)
 }
+;#endregion
 
 ;#region === INCLUDES FOLLOW ===========================================================
 #Include Gdip_All.ahk
