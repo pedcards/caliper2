@@ -87,6 +87,7 @@ MainGUI() {
 
 	toggleMarch(*) {
 		calState.March := !calState.March
+		drawCalipers()
 	}
 
 	btnCalibrate(*) {
