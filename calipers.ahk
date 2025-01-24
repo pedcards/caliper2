@@ -260,7 +260,7 @@ moveCalipers() {
  		calArray[key] += mPos.dx
 	}
 
-	scaleTooltip(calArray[2]-calArray[1])
+	scaleTooltip()
 	drawCalipers()
 
 	Return
@@ -287,9 +287,10 @@ reorderCalipers() {
 }
 
 ; Display tooltip measurements
-scaleTooltip(dx) {
-	global scale
+scaleTooltip() {
+	global scale, calArray
 
+	dx := calArray[2]-calArray[1]
 	ms := (scale) ? Round(dx/scale) : ""
 	bpm := (ms) ? Round(60000/ms,1) : ""
 	ToolTip((scale="") 
