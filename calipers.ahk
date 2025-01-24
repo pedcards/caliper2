@@ -293,27 +293,21 @@ scaleTooltip() {
 }
 
 ; March out caliper lines relative to X1-X2
-calMarch(grip:=2) {
-	global calArray, GdipOBJ, calState, mLast
+calMarch() {
+	global calArray, scr
 
-	if (calArray.Length < 2) {
-		Return
-	}
-	lastX := mLast.X																	; last known position
-	fullX := lastX-calArray[1].X														; distance from X1
-	steps := grip-1																		; divisor
-	dx := fullX/steps																	; dx between each caliper
-
+	dx := calArray[2]-calArray[1]
 	calArray.RemoveAt(2, calArray.Length - 1)											; clear everything above X1
 
-	while (lastX < GdipOBJ.W) {															; add calipers to the right
+	lastX := calArray[1]
+	while (lastX < scr.W) {															; add calipers to the right
 		lastX += dx
-		calArray.Push({X:lastX})
+		calArray.Push(lastX)
 	}
-	lastX := calArray[1].X																; add calipers to the left
-	while (lastX > GdipOBJ.X) {
+	lastX := calArray[1]																; add calipers to the left
+	while (lastX > scr.X) {
 		lastX -= dx
-		calArray.Push({X:lastX})
+		calArray.Push(lastX)
 	}
 
 	Return
