@@ -96,7 +96,7 @@ MainGUI() {
 
 ; Calibration GUI to calculate scale
 Calibrate() {
-	global calArray, scale
+	global calArray, scale, mLast
 
 	cWin := Gui()
 	cWin.AddText("w200 Center","Select calibration measurement")
