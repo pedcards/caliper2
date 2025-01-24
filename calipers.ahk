@@ -255,14 +255,11 @@ moveCalipers() {
 
 	for key,val in calArray
 	{
- 		calArray[key].X += mPos.dx
-		calArray[key].Y += mPos.dy
+ 		calArray[key] += mPos.dx
 	}
 
-	scaleTooltip(calArray[2].X-calArray[1].X)
-	buildCalipers()
-	drawHline(calArray[1].x,calArray[2].x,mPos.y)
-	UpdateLayeredWindow(GdipOBJ.hwnd, GdipOBJ.hdc)
+	scaleTooltip(calArray[2]-calArray[1])
+	drawCalipers()
 
 	Return
 }
