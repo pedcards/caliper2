@@ -48,9 +48,9 @@ MainGUI() {
 
 	phase.AddCheckbox(,"Calipers")
 			.OnEvent("Click",toggleCaliper)
-	phase.AddCheckbox("Disabled","March out")
+	phase.AddCheckbox("x100 yP Disabled","March out")
 			.OnEvent("Click",toggleMarch)
-	phase.AddButton("Disabled","Calibrate")
+	phase.AddButton("x10 Disabled","Calibrate")
 			.OnEvent("Click",btnCalibrate)
 	
 	phase.Show("x" scr.W * 0.8 " w120")
