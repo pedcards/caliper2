@@ -201,7 +201,7 @@ clickCaliper() {
 	global calState
 
 	mPos := mouseCoord()
-	if (FindClosest(mPos.x)) {
+	if (calState.Best) {
 		calState.Drag := true
 		SetTimer(dragCaliper,calState.refresh)
 	} else {
@@ -407,12 +407,15 @@ WM_LBUTTONUP(wParam, lParam, msg, hwnd)
 
 WM_SETCURSOR(wp, *) {
     if (wp != GdipOBJ.hwnd) {
+		calState.Best := ""
 		return
 	}
 	MouseGetPos(&mx)
-	if (FindClosest(mx)) {																; Matches V caliper
+	if (best:=FindClosest(mx)) {
+		calState.Best := best															; Matches V caliper
 		return DllCall('SetCursor', 'Ptr', scr.sizeCursor)
 	} else {																			; Otherwise H bar
+		calState.Best := 0
 		return DllCall('SetCursor', 'Ptr', scr.compassCursor)
 	}
 }
