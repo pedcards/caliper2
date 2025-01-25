@@ -40,6 +40,7 @@ OnExit ExitFunc
 
 MainGUI() {
 	global GdipOBJ, calArray, calState
+	static btnCalc:=false
 
 	phase := Gui()
 	phase.Opt("-MaximizeBox -MinimizeBox +AlwaysOnTop -ToolWindow")
@@ -66,7 +67,7 @@ MainGUI() {
 			; .OnEvent("Click",btnQTc)
 	phase.AddText("x100 yP+4","0000")
 	
-	phase.Show("x" scr.W * 0.8 " w120")
+	phase.Show("x" scr.W * 0.8 " h60")
 	phase.OnEvent("Close",phaseClose)
 	return
 
@@ -89,11 +90,13 @@ MainGUI() {
 			newCalipers()
 			phase["March"].Enabled := true
 			phase["Calibrate"].Enabled := true
+			phase["Calculate"].Enabled := true
 		} else {
 			UpdateLayeredWindow(GdipOBJ.hwnd, GdipOBJ.hdc,scr.X,scr.Y,scr.W,scr.H)
 			ToolTip()
 			phase["March"].Enabled := false
 			phase["Calibrate"].Enabled := false
+			phase["Calculate"].Enabled := false
 		}
 	}
 
@@ -107,6 +110,27 @@ MainGUI() {
 
 	btnCalibrate(*) {
 		Calibrate()
+	}
+
+	btnCalculate(*) {
+		btnCalc := !btnCalc
+		if (btnCalc) {
+			phase.Show("AutoSize")
+
+		} else {
+			phase.Show("h60")
+		}
+
+	}
+	btnRR(*) {
+		dx := calDiff()
+
+	}
+	btnQT(*) {
+
+	}
+	btnQTc(*) {
+
 	}
 }
 
