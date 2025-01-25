@@ -159,6 +159,50 @@ MainGUI() {
 		valQTc := Round(valQT/Sqrt(valRR/1000))
 		resQTc.Text := valQTc " ms"
 	}
+
+	menuReset(*) {
+		Reload
+	}
+	menuQuit(*) {
+		ExitApp
+	}
+}
+menuAbout(*) {
+	about := Gui()
+	about.w := 300
+	about.Opt("+AlwaysOnTop -SysMenu -Caption")
+	about.pic := about.AddPicture("","lib\comet.64x64.png")
+	about.txt1 := about.AddText("Center","(c)2025 Terrence Chun, MD")
+	about.txt2 := about.AddText("",
+			"[C]aliper`n"
+			"[O]n-screen`n"
+			"[M]easure`n"
+			"[E]lectronic`n"
+			"[T]ool"
+			)
+	about.txt3 := about.AddText("",
+			"Electronic Screen Calipers`n"
+			"`"Care enough to measure.`"`n`n"
+			)
+	about.OK := about.AddButton("","OK")
+	about.OK.OnEvent("Click",aboutClose)
+	about.Show("Hide w" about.w)
+
+	centerCtrl(about.pic,about.w)
+	centerCtrl(about.txt1,about.w)
+	centerCtrl(about.txt2,about.w)
+	centerCtrl(about.txt3,about.w)
+	centerCtrl(about.OK,about.w)
+	about.Show()
+	return
+
+	aboutClose(*) {
+		about.Destroy()
+	}
+}
+centerCtrl(ctl,winW) {
+	ControlGetPos(,,&w,,ctl)
+	ControlMove((winW-w)//2,,,,ctl)
 }
 
 ; Calibration GUI to calculate scale
