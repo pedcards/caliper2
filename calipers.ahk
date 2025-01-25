@@ -1,8 +1,8 @@
 /*  Calipers
 	Portable AHK2 based tool for on-screen measurements.
-	"Auto calibration" scans for vertical lines.
-	Calculations
-	March-out with drag of any line
+	mCOSM - mCaliper On-Screen Measurement
+	COMET - Calipers On-screen Measurement Electronic Tool
+	ESCARGOT - Electronic Screen Caliper for Arrhythmia Reading of Graphic Online Types
 */
 
 #Requires AutoHotkey v2
