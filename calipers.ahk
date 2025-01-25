@@ -40,7 +40,10 @@ OnExit ExitFunc
 
 MainGUI() {
 	global GdipOBJ, calArray, calState
-	static btnCalc:=false
+	static btnCalc:=false, 
+			valRR:="", 
+			valQT:="", 
+			valQTc:=""
 
 	phase := Gui()
 	phase.Opt("-MaximizeBox -MinimizeBox +AlwaysOnTop -ToolWindow")
@@ -57,15 +60,15 @@ MainGUI() {
 			.OnEvent("Click",btnCalculate)
 	
 	phase.AddText("R2 X10","")
-	phase.AddButton("w50 x40","R-R =")
+	phase.AddButton("w50 x40","R-R   =")
 			.OnEvent("Click",btnRR)
-	phase.AddText("x100 yP+4","0000")
-	phase.AddButton("w50 x40","Q-T =")
+			resRR := phase.AddText("w50 x100 yP+4",valRR)
+	phase.AddButton("w50 x40","Q-T   =")
 			; .OnEvent("Click",btnQT)
-	phase.AddText("x100 yP+4","0000")
+			resQT := phase.AddText("w50 x100 yP+4",valQT)
 	phase.AddButton("w50 x40","QTc =")
 			; .OnEvent("Click",btnQTc)
-	phase.AddText("x100 yP+4","0000")
+			resQTc := phase.AddText("w50 x100 yP+4",valQTc)
 	
 	phase.Show("x" scr.W * 0.8 " h60")
 	phase.OnEvent("Close",phaseClose)
