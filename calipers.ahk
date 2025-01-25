@@ -74,6 +74,7 @@ MainGUI() {
 	tray := A_TrayMenu
 	tray.Delete()
 	tray.Add("About...",menuAbout)
+	tray.Add("Instructions",menuInstr)
 	tray.Add("Reset",menuReset)
 	tray.Add("Quit",menuQuit)
 	
@@ -203,6 +204,23 @@ menuAbout(*) {
 centerCtrl(ctl,winW) {
 	ControlGetPos(,,&w,,ctl)
 	ControlMove((winW-w)//2,,,,ctl)
+}
+menuInstr(*) {
+	txt := "[ ] Calipers`n"
+		. "    Toggles calipers on and off`n"
+		. "    You can resize by dragging the L or R caliper`n`n"
+		. "[ ] March out`n"
+		. "    Toggles the `"march out`" function`n"
+		. "    You can drag individual calipers to fine-tune markings`n`n"
+		. "[Calibrate]`n"
+		. "    Move the calipers to desired position (1000 [5 big boxes],`n"
+		. "    2000 [10 big boxes], or 3000 [15 big boxes] ms),`n"
+		. "    then click here to set the calibration.`n`n"
+		. "[Calculate]`n"
+		. "    Drops a calculator for QTc`n"
+		. "    Draw a caliper, then click each button to insert values`n"
+		. "    and to calculate QTc"
+	MsgBox(txt,"Instructions")
 }
 
 ; Calibration GUI to calculate scale
