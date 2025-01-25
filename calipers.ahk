@@ -125,15 +125,32 @@ MainGUI() {
 		}
 
 	}
-	btnRR(*) {
-		dx := calDiff()
+	btnRR(btn,*) {
+		x := btn.Text
+		if !(scale) {
+			MsgBox("Must calibrate first!","COMET error")
+			return
+		}
+		valRR := Round(calDiff()/scale)
+		resRR.Text := valRR " ms"
 
 	}
 	btnQT(*) {
+		if !(scale) {
+			MsgBox("Must calibrate first!","COMET error")
+			return
+		}
+		valQT := Round(calDiff()/scale)
+		resQT.Text := valQT " ms"
 
 	}
 	btnQTc(*) {
-
+		if !(scale) {
+			MsgBox("Must calibrate first!","COMET error")
+			return
+		}
+		valQTc := Round(valQT/Sqrt(valRR/1000))
+		resQTc.Text := valQTc " ms"
 	}
 }
 
