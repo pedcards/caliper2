@@ -401,7 +401,7 @@ FindClosest(mx) {
 calDiff() {
 	global calArray
 
-	return calArray[2]-calArray[1]
+	return Abs(calArray[2]-calArray[1])
 }
 ;#endregion
 
