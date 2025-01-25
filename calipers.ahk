@@ -42,9 +42,9 @@ MainGUI() {
 	global GdipOBJ, calArray, calState
 
 	phase := Gui()
-	phase.Opt("-MaximizeBox -MinimizeBox +AlwaysOnTop +ToolWindow")
+	phase.Opt("-MaximizeBox -MinimizeBox +AlwaysOnTop -ToolWindow")
 	phase.BackColor := "C2BDBE"
-	phase.Title := "TC Calipers"
+	phase.Title := "TC Cal Meas Tool"
 
 	phase.AddCheckbox(,"Calipers")
 			.OnEvent("Click",toggleCaliper)
