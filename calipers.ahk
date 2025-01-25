@@ -48,7 +48,7 @@ MainGUI() {
 	phase := Gui()
 	phase.Opt("-MaximizeBox -MinimizeBox +AlwaysOnTop -ToolWindow")
 	phase.BackColor := "C2BDBE"
-	phase.Title := "TC Cal Meas Tool"
+	phase.Title := "TC's Cal Meas Tool"
 
 	phase.AddCheckbox(,"Calipers")
 			.OnEvent("Click",toggleCaliper)
