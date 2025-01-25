@@ -69,6 +69,13 @@ MainGUI() {
 	phase.AddButton("w50 x30","QTc =")
 			.OnEvent("Click",btnQTc)
 			resQTc := phase.AddText("w50 x90 yP+4",valQTc)
+
+	A_IconTip := "COMET"
+	tray := A_TrayMenu
+	tray.Delete()
+	tray.Add("About...",menuAbout)
+	tray.Add("Reset",menuReset)
+	tray.Add("Quit",menuQuit)
 	
 	phase.Show("x" scr.W * 0.8 " h60")
 	phase.OnEvent("Close",phaseClose)
