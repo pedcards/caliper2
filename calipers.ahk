@@ -197,7 +197,7 @@ dragCaliper() {
 	mPos := mouseCoord()
 
 	if (grip>2) {
-		dx := calArray[2]-calArray[1]
+		dx := calDiff()
 		fullX := Abs(calArray[grip] - calArray[1])
 		newX := Abs(mPos.X - calArray[1])
 		factor := newX/fullX
@@ -298,7 +298,7 @@ reorderCalipers() {
 scaleTooltip() {
 	global scale, calArray
 
-	dx := calArray[2]-calArray[1]
+	dx := calDiff()
 	ms := (scale) ? Round(dx/scale) : ""
 	bpm := (ms) ? Round(60000/ms,1) : ""
 	ToolTip((scale="") 
@@ -311,7 +311,7 @@ scaleTooltip() {
 calMarch() {
 	global calArray, scr
 
-	dx := calArray[2]-calArray[1]
+	dx := calDiff()
 	calArray.RemoveAt(2, calArray.Length - 1)											; clear everything above X1
 
 	lastX := calArray[1]
@@ -339,6 +339,12 @@ FindClosest(mx) {
 		}
 	}
 	Return
+}
+
+calDiff() {
+	global calArray
+
+	return calArray[2]-calArray[1]
 }
 ;#endregion
 
