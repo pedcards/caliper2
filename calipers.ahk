@@ -78,9 +78,8 @@ MainGUI() {
 	tray.Delete()
 	tray.Add("About...",menuAbout)
 	tray.Add("Instructions",menuInstr)
-	tray.Add("Reset",menuReset)
-	tray.Add("Quit",menuQuit)
-	
+	tray.Add("Quit",(*)=>ExitApp())
+
 	return
 
 	/*	Internal phaseGUI methods
@@ -153,13 +152,6 @@ MainGUI() {
 			resQTc.Text := valQTc " ms"
 		}
 	}
-
-	menuReset(*) {
-		Reload
-	}
-	menuQuit(*) {
-		ExitApp
-	}
 }
 menuAbout(*) {
 	about := Gui()
@@ -175,7 +167,7 @@ menuAbout(*) {
 			)
 	about.txt3 := about.AddText("Center","COMET v1.0`n(c)2025 Terrence Chun, MD")
 	about.OK := about.AddButton("","OK")
-	about.OK.OnEvent("Click",aboutClose)
+	about.OK.OnEvent("Click", (*)=>about.Destroy())
 	about.Show("Hide w" about.w)
 
 	centerCtrl(about.pic,about.w)
