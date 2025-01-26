@@ -61,13 +61,13 @@ MainGUI() {
 	
 	phase.AddText("R2 X10","")
 	phase.AddButton("w50 x30","R-R   =")
-			.OnEvent("Click",btnRR)
+			.OnEvent("Click",btnValues)
 			resRR := phase.AddText("w50 x90 yP+4",valRR)
 	phase.AddButton("w50 x30","Q-T   =")
-			.OnEvent("Click",btnQT)
+			.OnEvent("Click",btnValues)
 			resQT := phase.AddText("w50 x90 yP+4",valQT)
 	phase.AddButton("w50 x30","QTc =")
-			.OnEvent("Click",btnQTc)
+			.OnEvent("Click",btnValues)
 			resQTc := phase.AddText("w50 x90 yP+4",valQTc)
 	
 	phase.Show("x" scr.W * 0.8 " h60")
@@ -134,32 +134,24 @@ MainGUI() {
 		}
 
 	}
-	btnRR(btn,*) {
+	btnValues(btn,*) {																	; Act on calculate value buttons
+		if !(scale) {
+			MsgBox("Must calibrate first!","COMET error")
+			return
+		}
 		x := btn.Text
-		if !(scale) {
-			MsgBox("Must calibrate first!","COMET error")
-			return
+		switch
+		{
+		case (x~="R-R"): 																; R-R button
+			valRR := Round(calDiff()/scale)
+			resRR.Text := valRR " ms"
+		case (x~="Q-T"): 																; Q-T button
+			valQT := Round(calDiff()/scale)
+			resQT.Text := valQT " ms"
+		case (x~="QTc"): 																; QTc button
+			valQTc := Round(valQT/Sqrt(valRR/1000))
+			resQTc.Text := valQTc " ms"
 		}
-		valRR := Round(calDiff()/scale)
-		resRR.Text := valRR " ms"
-
-	}
-	btnQT(*) {
-		if !(scale) {
-			MsgBox("Must calibrate first!","COMET error")
-			return
-		}
-		valQT := Round(calDiff()/scale)
-		resQT.Text := valQT " ms"
-
-	}
-	btnQTc(*) {
-		if !(scale) {
-			MsgBox("Must calibrate first!","COMET error")
-			return
-		}
-		valQTc := Round(valQT/Sqrt(valRR/1000))
-		resQTc.Text := valQTc " ms"
 	}
 
 	menuReset(*) {
