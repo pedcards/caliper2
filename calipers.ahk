@@ -167,7 +167,7 @@ menuAbout(*) {
 			"Electronic Screen Calipers`n"
 			"`"Care enough to measure.`"`n`n"
 			)
-	about.txt3 := about.AddText("Center","COMET v1.0`n(c)2025 Terrence Chun, MD")
+	about.txt3 := about.AddText("Center","COMET v2.0`n(c)2025 Terrence Chun, MD")
 	about.OK := about.AddButton("","OK")
 	about.OK.OnEvent("Click", (*)=>about.Destroy())
 	about.Show("Hide w" about.w)
