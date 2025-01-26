@@ -170,21 +170,18 @@ menuAbout(*) {
 	about.OK.OnEvent("Click", (*)=>about.Destroy())
 	about.Show("Hide w" about.w)
 
-	centerCtrl(about.pic,about.w)
-	centerCtrl(about.txt1,about.w)
-	centerCtrl(about.txt2,about.w)
-	centerCtrl(about.txt3,about.w)
-	centerCtrl(about.OK,about.w)
+	centerCtrl(about.pic)
+	centerCtrl(about.txt1)
+	centerCtrl(about.txt2)
+	centerCtrl(about.txt3)
+	centerCtrl(about.OK)
 	about.Show()
 	return
 
-	aboutClose(*) {
-		about.Destroy()
+	centerCtrl(ctl) {
+		ControlGetPos(,,&w,,ctl)
+		ControlMove((about.w-w)//2,,,,ctl)
 	}
-}
-centerCtrl(ctl,winW) {
-	ControlGetPos(,,&w,,ctl)
-	ControlMove((winW-w)//2,,,,ctl)
 }
 menuInstr(*) {
 	txt := "[ ] Calipers`n"
