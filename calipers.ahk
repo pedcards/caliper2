@@ -161,7 +161,7 @@ menuAbout(*) {
 	about.txt1 := about.AddText("",
 			"[C]aliper [O]n-screen [M]easure [E]lectronic [T]ool"
 			)
-	about.txt2 := about.AddText("",
+	about.txt2 := about.AddText("Center",
 			"Electronic Screen Calipers`n"
 			"`"Care enough to measure.`"`n`n"
 			)
@@ -219,7 +219,7 @@ Calibrate() {
 
 	WinWaitClose("Calibrate")
 	if (ms) {
-		dx := Abs(calArray[1] - calArray[2])
+		dx := calDiff()
 		scale := dx/ms
 		MouseMove(calArray[2],mLast.Y)
 		scaleTooltip() 
