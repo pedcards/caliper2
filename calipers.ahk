@@ -1,8 +1,6 @@
 /*  Calipers
 	Portable AHK2 based tool for on-screen measurements.
-	mCOSM - mCaliper On-Screen Measurement
 	COMET - Calipers On-screen Measurement Electronic Tool
-	ESCARGOT - Electronic Screen Caliper for Arrhythmia Reading of Graphic Online Types
 */
 
 #Requires AutoHotkey v2
