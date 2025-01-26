@@ -159,7 +159,8 @@ menuAbout(*) {
 	about := Gui()
 	about.w := 300
 	about.Opt("+AlwaysOnTop -SysMenu -Caption")
-	about.pic := about.AddPicture("","lib\comet.64x64.png")
+	about.pic := about.AddPicture("w64",
+		FileExist("comet.exe") ? "comet.exe" : "")
 	about.txt1 := about.AddText("",
 			"[C]aliper [O]n-screen [M]easure [E]lectronic [T]ool"
 			)
