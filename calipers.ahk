@@ -50,6 +50,8 @@ MainGUI() {
 	phase.BackColor := "C2BDBE"
 	phase.Title := "TC's Cal Meas Tool"
 
+	/*	Main GUI buttons
+	*/
 	phase.AddCheckbox(,"Calipers")
 			.OnEvent("Click",toggleCaliper)
 	phase.AddCheckbox("x100 yP Disabled","March out")
@@ -59,6 +61,8 @@ MainGUI() {
 	phase.AddButton("x100 yP Disabled","Calculate")
 			.OnEvent("Click",btnCalculate)
 	
+	/*	These elements will be hidden until CALCULATE is toggled 
+	*/
 	phase.AddText("R2 X10","")
 	phase.AddButton("w50 x30","R-R   =")
 			.OnEvent("Click",btnValues)
@@ -98,12 +102,12 @@ MainGUI() {
 		Gdip_GraphicsClear(GdipOBJ.G)													; clear calArray and bitmap
 
 		if (calState.Active) {
-			newCalipers()
+			newCalipers()																; Reset calipers
 			phase["March"].Enabled := true
 			phase["Calibrate"].Enabled := true
 			phase["Calculate"].Enabled := true
 		} else {
-			UpdateLayeredWindow(GdipOBJ.hwnd, GdipOBJ.hdc,scr.X,scr.Y,scr.W,scr.H)
+			UpdateLayeredWindow(GdipOBJ.hwnd, GdipOBJ.hdc,scr.X,scr.Y,scr.W,scr.H)		; Clear bitmap
 			ToolTip()
 			phase["March"].Enabled := false
 			phase["Calibrate"].Enabled := false
@@ -114,7 +118,7 @@ MainGUI() {
 	toggleMarch(*) {
 		calState.March := !calState.March
 		if (calArray.Length>2) {
-			calArray.RemoveAt(3, calArray.Length - 2)
+			calArray.RemoveAt(3, calArray.Length - 2)									; Remove all calArray > 2
 		}
 		drawCalipers()
 	}
@@ -126,10 +130,10 @@ MainGUI() {
 	btnCalculate(*) {
 		btnCalc := !btnCalc
 		if (btnCalc) {
-			phase.Show("AutoSize")
+			phase.Show("AutoSize")														; Extended GUI
 
 		} else {
-			phase.Show("h60")
+			phase.Show("h60")															; Minimal GUI
 		}
 
 	}
@@ -268,10 +272,10 @@ clickCaliper() {
 	global calState
 
 	mPos := mouseCoord()
-	if (calState.Best) {
+	if (calState.Best) {																; Best V value from WM_SETCURSOR
 		calState.Drag := true
 		SetTimer(dragCaliper,calState.refresh)
-	} else {
+	} else {																			; Otherwise grabbed H bar
 		calstate.Move := true
 		SetTimer(moveCalipers,calState.refresh)
 	}
@@ -297,17 +301,17 @@ mouseCoord() {
 dragCaliper() {
 	global calArray, calState, mLast
 
-	grip:=FindClosest(mLast.X)
+	grip:=FindClosest(mLast.X)															; Recheck each time, as calArray changes during March
 	mPos := mouseCoord()
 
 	if (grip>2) {
-		dx := calDiff()
-		fullX := Abs(calArray[grip] - calArray[1])
-		newX := Abs(mPos.X - calArray[1])
-		factor := newX/fullX
-		calArray[2] := (dx*factor) + calArray[1]
+		dx := calDiff()																	; Store X1-X2
+		fullX := Abs(calArray[grip] - calArray[1])										; Full distance from X1-grip
+		newX := Abs(mPos.X - calArray[1])												; Distance from X1-newX
+		factor := newX/fullX															; Ratio of new/old
+		calArray[2] := (dx*factor) + calArray[1]										; Adjust new X1-X2
 	} else {
-		calArray[grip] := mPos.X
+		calArray[grip] := mPos.X														; If X1 or X2, just move it
 	}
 
 	scaleTooltip()
@@ -369,7 +373,7 @@ moveCalipers() {
 
 	for key,val in calArray
 	{
- 		calArray[key] += mPos.dx
+ 		calArray[key] += mPos.dx														; Adjust all by mPos.dx
 	}
 
 	scaleTooltip()
@@ -458,7 +462,7 @@ calDiff() {
 WM_LBUTTONDOWN(wParam, lParam, msg, hwnd)
 {
 	MouseGetPos(,,&ui,&mb)
-	if (ui = GdipOBJ.hwnd) {
+	if (ui = GdipOBJ.hwnd) {															; LMB down on GUI
 		clickCaliper()
 	}
 }
