@@ -322,6 +322,7 @@ dropCaliper() {
 
 	calState.Drag:=false
 	SetTimer(dragCaliper,0)
+	reorderCalipers()
 	Return
 }
 
@@ -390,7 +391,7 @@ moveRelease() {
 reorderCalipers() {
 	global calArray
 
-	if (calArray[1].X > calArray[2].X) {
+	if (calArray[1] > calArray[2]) {
 		t := calArray[1]
 		calArray[1] := calArray[2]
 		calArray[2] := t
