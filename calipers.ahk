@@ -173,18 +173,14 @@ menuAbout(*) {
 	about.w := 300
 	about.Opt("+AlwaysOnTop -SysMenu -Caption")
 	about.pic := about.AddPicture("","lib\comet.64x64.png")
-	about.txt1 := about.AddText("Center","(c)2025 Terrence Chun, MD")
-	about.txt2 := about.AddText("",
-			"[C]aliper`n"
-			"[O]n-screen`n"
-			"[M]easure`n"
-			"[E]lectronic`n"
-			"[T]ool"
+	about.txt1 := about.AddText("",
+			"[C]aliper [O]n-screen [M]easure [E]lectronic [T]ool"
 			)
-	about.txt3 := about.AddText("",
+	about.txt2 := about.AddText("",
 			"Electronic Screen Calipers`n"
 			"`"Care enough to measure.`"`n`n"
 			)
+	about.txt3 := about.AddText("Center","COMET v1.0`n(c)2025 Terrence Chun, MD")
 	about.OK := about.AddButton("","OK")
 	about.OK.OnEvent("Click",aboutClose)
 	about.Show("Hide w" about.w)
