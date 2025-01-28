@@ -8,8 +8,8 @@
 #Include %A_ScriptDir%\lib\
 CoordMode("Mouse","Screen")
 
-scr:={X: 0 ,Y: 0,
-		W: A_ScreenWidth, H: A_ScreenHeight,											; Screen dimensions
+MonitorGetWorkArea(,&X,&Y,&W,&H)
+scr:={X: X ,Y: Y, W: W, H: H,															; Screen dimensions
 		sizeCursor: LoadCursor(IDC_SIZEWE := 32644),									; and cursor ptrs
 		compassCursor: LoadCursor(IDC_SIZEALL := 32646)
 	}
