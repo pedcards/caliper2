@@ -116,10 +116,8 @@ MainGUI() {
 	}
 
 	toggleMarch(*) {
-		calState.March := !calState.March
-		if (calArray.Length>2) {
-			calArray.RemoveAt(3, calArray.Length - 2)									; Remove all calArray > 2
-		}
+		calState.March := phase["March"].Value
+		calArray := [calArray[1],calArray[2]]
 		drawCalipers()
 	}
 
