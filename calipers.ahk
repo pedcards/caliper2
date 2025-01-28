@@ -95,9 +95,9 @@ MainGUI() {
 	}
 
 	toggleCaliper(*) {
-		calState.Active := !calState.Active
-		calArray := []																	; Whether opening or closing
-		Gdip_GraphicsClear(GdipOBJ.G)													; clear calArray and bitmap
+		calState.Active := phase["Calipers"].Value
+		calArray := [calArray[1],calArray[2]]											; Whether opening or closing
+		Gdip_GraphicsClear(GdipOBJ.G)													; reset calArray and bitmap
 
 		if (calState.Active) {
 			mouseCoord()
