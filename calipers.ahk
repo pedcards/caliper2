@@ -8,8 +8,8 @@
 #Include %A_ScriptDir%\lib\
 CoordMode("Mouse","Screen")
 
-scr:={X: 0 ,Y: 0,
-		W: A_ScreenWidth, H: A_ScreenHeight,											; Screen dimensions
+MonitorGetWorkArea(,&X,&Y,&W,&H)
+scr:={X: X ,Y: Y, W: W, H: H,															; Screen dimensions
 		sizeCursor: LoadCursor(IDC_SIZEWE := 32644),									; and cursor ptrs
 		compassCursor: LoadCursor(IDC_SIZEALL := 32646)
 	}
@@ -21,8 +21,8 @@ calState:={
 		March:0,																		; MARCH mode
 		refresh:30																		; Refresh rate for timers
 		}
-calArray := []																			; Array of X positions
-mLast := {X:0,Y:0}																		; To store mouse X,Y coords
+calArray := [scr.W//2 -50,scr.W//2 +50]													; Array of X positions
+mLast := {X:0,Y:scr.H//2}																; To store mouse X,Y coords
 scale := ""																				; Multiplier for calibration
 
 createLayeredWindow()
@@ -95,12 +95,14 @@ MainGUI() {
 	}
 
 	toggleCaliper(*) {
-		calState.Active := !calState.Active
-		calArray := []																	; Whether opening or closing
-		Gdip_GraphicsClear(GdipOBJ.G)													; clear calArray and bitmap
+		calState.Active := phase["Calipers"].Value
+		calArray := [calArray[1],calArray[2]]											; Whether opening or closing
+		Gdip_GraphicsClear(GdipOBJ.G)													; reset calArray and bitmap
 
 		if (calState.Active) {
-			newCalipers()																; Reset calipers
+			mouseCoord()
+			scaleTooltip()
+			drawCalipers()																; Redraw calipers
 			phase["March"].Enabled := true
 			phase["Calibrate"].Enabled := true
 			phase["Calculate"].Enabled := true
@@ -114,10 +116,8 @@ MainGUI() {
 	}
 
 	toggleMarch(*) {
-		calState.March := !calState.March
-		if (calArray.Length>2) {
-			calArray.RemoveAt(3, calArray.Length - 2)									; Remove all calArray > 2
-		}
+		calState.March := phase["March"].Value
+		calArray := [calArray[1],calArray[2]]
 		drawCalipers()
 	}
 
@@ -251,20 +251,6 @@ Calibrate() {
 ;#endregion
 
 ;#region === CALIPER FUNCTIONS =========================================================
-
-; Create new set of calipers
-newCalipers() {
-	global scr, calArray, mLast
-
-	midX := scr.W//2
-	midY := scr.H//2
-	calArray.InsertAt(1,midX-50,midX+50)
-	mLast.Y := midY
-
-	drawCalipers()
-
-	return
-}
 
 ; Drag or move calipers when click on V or H line
 clickCaliper() {
