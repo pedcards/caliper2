@@ -22,7 +22,7 @@ calState:={
 		refresh:30																		; Refresh rate for timers
 		}
 calArray := [scr.W//2 -50,scr.W//2 +50]													; Array of X positions
-mLast := {X:0,Y:0}																		; To store mouse X,Y coords
+mLast := {X:0,Y:scr.H//2}																; To store mouse X,Y coords
 scale := ""																				; Multiplier for calibration
 
 createLayeredWindow()
