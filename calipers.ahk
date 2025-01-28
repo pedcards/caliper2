@@ -100,7 +100,9 @@ MainGUI() {
 		Gdip_GraphicsClear(GdipOBJ.G)													; clear calArray and bitmap
 
 		if (calState.Active) {
-			newCalipers()																; Reset calipers
+			mouseCoord()
+			scaleTooltip()
+			drawCalipers()																; Redraw calipers
 			phase["March"].Enabled := true
 			phase["Calibrate"].Enabled := true
 			phase["Calculate"].Enabled := true
@@ -251,20 +253,6 @@ Calibrate() {
 ;#endregion
 
 ;#region === CALIPER FUNCTIONS =========================================================
-
-; Create new set of calipers
-newCalipers() {
-	global scr, calArray, mLast
-
-	midX := scr.W//2
-	midY := scr.H//2
-	calArray.InsertAt(1,midX-50,midX+50)
-	mLast.Y := midY
-
-	drawCalipers()
-
-	return
-}
 
 ; Drag or move calipers when click on V or H line
 clickCaliper() {
