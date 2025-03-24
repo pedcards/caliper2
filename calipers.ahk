@@ -1,6 +1,11 @@
 /*  Calipers
-	Portable AHK2 based tool for on-screen measurements.
-	COMET - Calipers On-screen Measurement Electronic Tool
+	Portable AHKv2 based tool for on-screen measurements.
+	COMET - Calipers On-screen MEasurement Tool
+
+	TODO:
+	* Scan for 3 sec tick marks
+		- use FindText to identify up and down ticks
+	* Custom toggle icons
 */
 
 #Requires AutoHotkey v2
@@ -162,7 +167,7 @@ menuAbout(*) {
 	about.pic := about.AddPicture("w64",
 		FileExist("comet.exe") ? "comet.exe" : "")
 	about.txt1 := about.AddText("",
-			"[C]aliper [O]n-screen [M]easure [E]lectronic [T]ool"
+			"[C]aliper [O]n-screen [ME]asurement [T]ool"
 			)
 	about.txt2 := about.AddText("Center",
 			"Electronic Screen Calipers`n"
