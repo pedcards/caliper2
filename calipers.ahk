@@ -223,7 +223,8 @@ Calibrate() {
 	cWin.AddButton("w200","1000 ms (good)").OnEvent("Click",cBtnClicked)
 	cWin.AddButton("w200","2000 ms (better)").OnEvent("Click",cBtnClicked)
 	cWin.AddButton("w200","3000 ms (best)").OnEvent("Click",cBtnClicked)
-	cWin.AddButton("w200","Other").OnEvent("Click",cBtnClicked)
+	cWin.AddText(," ")
+	cWin.AddButton("w200","Find 3 sec marks").OnEvent("Click",cBtnClicked)
 	cWin.Title := "Calibrate"
 	cWin.OnEvent("Close",cWinClose)
 	cWin.Opt("+AlwaysOnTop -MaximizeBox -MinimizeBox")
@@ -248,8 +249,8 @@ Calibrate() {
 				ms := 2000
 			case x~="3000": 
 				ms := 3000
-			case x~="Other":
-				ms := InputBox("Enter time (ms)","Other duration").Value
+			case x~="Find":
+				ms := (findTick()) ? 3000 : ""
 		}
 		cWin.Destroy()
 	}
