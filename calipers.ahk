@@ -258,6 +258,22 @@ Calibrate() {
 	cWinClose(*) {
 		return
 	}
+
+	findTick(*) {
+		if (ok:=FindText(&X, &Y, 0, 0, scr.W, scr.H, 0.2, 0, scr.tickBot)) {
+			calArray[1]:=ok[1].x
+			calArray[2]:=ok[2].x
+			drawCalipers()
+			return true
+		}
+		if (ok:=FindText(&X, &Y, 0, 0, scr.W, scr.H, 0.2, 0, scr.tickTop)) {
+			calArray[1]:=ok[1].x
+			calArray[2]:=ok[2].x
+			drawCalipers()
+			return true
+		}
+		return false
+	}
 }
 ;#endregion
 
