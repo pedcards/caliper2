@@ -544,3 +544,4 @@ ExitFunc(ExitReason, ExitCode)
 
 ;#region === INCLUDES FOLLOW ===========================================================
 #Include Gdip_All.ahk
+#Include FindText_v2.ahk
