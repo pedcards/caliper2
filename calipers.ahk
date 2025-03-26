@@ -218,13 +218,23 @@ menuInstr(*) {
 Calibrate() {
 	global calArray, scale, mLast
 
+	if (findTick()) {
+		chk:=MsgBox("Is this 3 sec?","Auto calibration","YesNoCancel")
+		switch chk {
+			case "Yes": 			
+				ms := 3000
+				cWinTooltip()
+				return
+			case "Cancel":
+				return
+		}
+	}
+
 	cWin := Gui()
 	cWin.AddText("w200 Center","Select calibration measurement")
 	cWin.AddButton("w200","1000 ms (good)").OnEvent("Click",cBtnClicked)
 	cWin.AddButton("w200","2000 ms (better)").OnEvent("Click",cBtnClicked)
 	cWin.AddButton("w200","3000 ms (best)").OnEvent("Click",cBtnClicked)
-	cWin.AddText(," ")
-	cWin.AddButton("w200","Find 3 sec marks").OnEvent("Click",cBtnClicked)
 	cWin.Title := "Calibrate"
 	cWin.OnEvent("Close",cWinClose)
 	cWin.Opt("+AlwaysOnTop -MaximizeBox -MinimizeBox")
