@@ -242,13 +242,17 @@ Calibrate() {
 	ms := 0
 
 	WinWaitClose("Calibrate")
-	if (ms) {
-		dx := calDiff()
-		scale := dx/ms
-		MouseMove(calArray[2],mLast.Y)
-		scaleTooltip() 
-	}
+	cWinTooltip()
 	Return
+	
+	cWinTooltip() {
+		if (ms) {
+			dx := calDiff()
+			scale := dx/ms
+			MouseMove(calArray[2],mLast.Y)
+			scaleTooltip() 
+		}
+	}
 
 	cBtnClicked(Button,*) {
 		x := Button.Text
