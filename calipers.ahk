@@ -111,7 +111,7 @@ MainGUI() {
 
 		if (calState.Active) {
 			mouseCoord()
-			scaleTooltip()
+			; scaleTooltip()
 			drawCalipers()																; Redraw calipers
 			phase["March"].Enabled := true
 			phase["Calibrate"].Enabled := true
