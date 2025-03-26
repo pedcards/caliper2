@@ -219,14 +219,11 @@ Calibrate() {
 	global calArray, scale, mLast
 
 	if (findTick()) {
-		chk:=MsgBox("Is this 3 sec?","Auto calibration","YesNoCancel")
-		switch chk {
-			case "Yes": 			
-				ms := 3000
-				cWinTooltip()
-				return
-			case "Cancel":
-				return
+		chk:=MsgBox("Is this 3 sec?","Auto calibration","YesNo")
+		if (chk="Yes") {
+			ms := 3000
+			cWinTooltip()
+			return
 		}
 	}
 
