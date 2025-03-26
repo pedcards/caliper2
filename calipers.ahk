@@ -260,19 +260,33 @@ Calibrate() {
 	}
 
 	findTick(*) {
-		if (ok:=FindText(&X, &Y, 0, 0, scr.W, scr.H, 0.2, 0, scr.tickBot)) {
-			calArray[1]:=ok[1].x
-			calArray[2]:=ok[2].x
-			drawCalipers()
+		Gdip_GraphicsClear(GdipOBJ.G)
+		UpdateLayeredWindow(GdipOBJ.hwnd, GdipOBJ.hdc,scr.X,scr.Y,scr.W,scr.H)
+		ToolTip()
+
+		if (scaleTick(scr.tickBot)) {
 			return true
 		}
-		if (ok:=FindText(&X, &Y, 0, 0, scr.W, scr.H, 0.2, 0, scr.tickTop)) {
-			calArray[1]:=ok[1].x
-			calArray[2]:=ok[2].x
-			drawCalipers()
+		if (scaleTick(scr.tickTop)) {
 			return true
 		}
+		
 		return false
+	}
+	scaleTick(text) {
+		loop 4
+		{
+			scale := 0.1*(A_Index-1)+1
+			ok:=FindText(&X, &Y, 0, 0, scr.W, scr.H, 0.1, 0, text,,,,,,,scale,scale)
+			if (ok=0 || ok.Length<2) {
+				drawCalipers()
+				return false
+			}
+			calArray[1]:=ok[1].x
+			calArray[2]:=ok[2].x
+			drawCalipers()
+			return ok
+		}
 	}
 }
 ;#endregion
