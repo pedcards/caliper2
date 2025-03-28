@@ -282,13 +282,14 @@ Calibrate() {
 		UpdateLayeredWindow(GdipOBJ.hwnd, GdipOBJ.hdc,scr.X,scr.Y,scr.W,scr.H)
 		ToolTip()
 
-		if (scaleTick(scr.tickBot)) {
-			return true
+		for key,val in asc
+		{
+			if (duration:=scaleTick(val)) {
+				drawCalipers()
+				return duration
+			}
 		}
-		if (scaleTick(scr.tickTop)) {
-			return true
-		}
-		
+		drawCalipers()
 		return false
 	}
 	scaleTick(text) {
