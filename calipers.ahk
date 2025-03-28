@@ -296,16 +296,27 @@ Calibrate() {
 		loop 4
 		{
 			scale := 0.1*(A_Index-1)+1
+			RegExMatch(text,"^\|\<(.*?)\>",&label)
 			ok:=FindText(&X, &Y, 0, 0, scr.W, scr.H, 0.1, 0, text,,,,,,,scale,scale)
-			if (ok=0 || ok.Length<2) {
-				drawCalipers()
+			if (ok=0) {
 				return false
 			}
-			calArray[1]:=ok[1].x
-			calArray[2]:=ok[2].x
-			drawCalipers()
-			return ok
+			if InStr(label[1],"tick") {
+				if (ok.Length=1) {
+					return false
+				}
+				calArray[1]:=ok[1].x
+				calArray[2]:=ok[2].x
+				return 3
+			}
+			if InStr(label[1],"grid") {
+				RegExMatch(label[1],"_(\d)$",&duration)
+				calArray[1]:=ok[1].1
+				calArray[2]:=ok[1].1 + ok[1].3
+				return duration[1]
+			}
 		}
+		return false
 	}
 }
 ;#endregion
