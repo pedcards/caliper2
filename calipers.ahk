@@ -287,13 +287,15 @@ Calibrate() {
 	}
 
 	findTick(*) {
-		Gdip_GraphicsClear(GdipOBJ.G)
-		UpdateLayeredWindow(GdipOBJ.hwnd, GdipOBJ.hdc,scr.X,scr.Y,scr.W,scr.H)
-		ToolTip()
+		OutputDebug("============ FIND TICK ===============`n")
+		hideCalipers()
+		cWinProgress.Show("x100 y100 Autosize")
 
 		for key,val in asc
 		{
+			cWinProgress["Progress"].value := key * (100/asc.Length)
 			if (duration:=scaleTick(val)) {
+				cWinProgress.Destroy()
 				drawCalipers()
 				return duration
 			}
