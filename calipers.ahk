@@ -414,6 +414,15 @@ drawCalipers() {
 	Return
 }
 
+; Hide caliper lines and tooltip
+hideCalipers() {
+	global GdipOBJ, scr
+	Gdip_GraphicsClear(GdipOBJ.G)
+	UpdateLayeredWindow(GdipOBJ.hwnd, GdipOBJ.hdc,scr.X,scr.Y,scr.W,scr.H)
+	ToolTip()
+}
+
+
 ; Draw vertical line at X
 drawVline(X) {
 	global GdipOBJ
