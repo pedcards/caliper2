@@ -230,6 +230,11 @@ Calibrate() {
 		"|<line1>*223$5.9IV248EV248EY",
 		"|<line2>*223$5.82c2080U2080Y"
 	]
+	cWinProgress := Gui()
+	cWinProgress.Title := "Auto calibration"
+	cWinProgress.AddProgress("w200 cBlue Center vProgress")
+	cWinProgress.AddText("w200 vLabel Center","")
+	cWinProgress.Opt("+AlwaysOnTop -SysMenu")
 		
 	if (duration:=findTick()) {
 		chk:=MsgBox("Is this " duration " sec?","Auto calibration","YesNo")
