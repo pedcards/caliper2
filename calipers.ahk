@@ -253,7 +253,7 @@ Calibrate() {
 	cWin.Title := "Calibrate"
 	cWin.OnEvent("Close",cWinClose)
 	cWin.Opt("+AlwaysOnTop -MaximizeBox -MinimizeBox")
-	cWin.Show("Center Autosize")
+	cWin.Show("x100 y100 Autosize")
 	ms := 0
 
 	WinWaitClose("Calibrate")
