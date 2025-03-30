@@ -130,7 +130,9 @@ MainGUI() {
 	}
 
 	btnCalibrate(*) {
+		phase.Hide()
 		Calibrate()
+		phase.Show()
 	}
 
 	btnCalculate(*) {
