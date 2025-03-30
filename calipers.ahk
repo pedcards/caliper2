@@ -304,10 +304,12 @@ Calibrate() {
 		return false
 	}
 	scaleTick(text) {
+		RegExMatch(text,"^\|\<(.*?)\>",&label)
+		OutputDebug(label[1] "`n")
+		cWinProgress["Label"].value := label[1]
 		loop 4
 		{
 			scale := 0.1*(A_Index-1)+1
-			RegExMatch(text,"^\|\<(.*?)\>",&label)
 			ok:=FindText(&X, &Y, 0, 0, scr.W, scr.H, 0.1, 0, text,,,,,,,scale,scale)
 			if (ok=0) {
 				return false
