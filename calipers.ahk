@@ -300,6 +300,7 @@ Calibrate() {
 				return duration
 			}
 		}
+		cWinProgress.Destroy()
 		drawCalipers()
 		return false
 	}
@@ -312,7 +313,7 @@ Calibrate() {
 			scale := 0.1*(A_Index-1)+1
 			ok:=FindText(&X, &Y, 0, 0, scr.W, scr.H, 0.1, 0, text,,,,,,,scale,scale)
 			if (ok=0) {
-				return false
+				continue
 			}
 			if InStr(label[1],"tick") {
 				if (ok.Length=1) {
