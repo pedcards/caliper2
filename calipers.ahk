@@ -330,8 +330,63 @@ Calibrate() {
 				calArray[2]:=ok[1].1 + ok[1].3
 				return duration[1]
 			}
+			if InStr(label[1],"line") {
+				; ln := ok.Length
+				scanLines(&ok)
+			}
 		}
 		return false
+	}
+	scanLines(&ok) {
+		loop ok.Length
+		{
+			bars .= ok[A_Index].X "|"
+		}
+		bars := StrSplit(Sort(Trim(bars,"|"),"NUD|"),"|")
+		barX := []
+		barGroup := []
+		barLast := 0
+		loop bars.length
+		{
+			bar1 := barLast
+			bar2 := bars[A_Index]
+			dbar := Abs(bar2-bar1)
+			barX.Push(bar2)
+			if (barX.Length<3) {
+				barLast := bar2
+				dbarLast := dBar
+				continue
+			}
+			if (Abs(dbar-dbarLast)>1) {
+				if (barX.Length=2) {
+					barLast := bar2
+					dbarLast := dbar
+					continue
+				}
+				barX.Pop()
+				barX.Push(dbarLast)
+				barGroup.Push(barX)
+				barX := []
+			} 
+			barLast := bar2
+			dbarLast := dbar
+		}
+		barGroup.Push(barX)
+
+		barG := barGroup[1]
+		barDx := barG.Pop()
+		barLn := barG.Length
+		bar1 := barG[1]
+		bar2 := bar1+(barDx*15)
+		loop bars.length
+		{
+			barGx := bars[A_Index]
+			if (Abs(barGx-bar2)<5) {
+				bar2 := barGx
+			}
+		}
+
+		; UpdateLayeredWindow(GdipOBJ.hwnd, GdipOBJ.hdc,scr.X,scr.Y,scr.W,scr.H)				; Refresh viewport
 	}
 }
 ;#endregion
