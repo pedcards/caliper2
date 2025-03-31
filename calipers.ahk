@@ -373,6 +373,9 @@ dragCaliper() {
 	global calArray, calState, mLast
 
 	grip:=FindClosest(mLast.X)															; Recheck each time, as calArray changes during March
+	if GetKeyState("Shift") {
+		findLines(mLast.X)
+	}
 	mPos := mouseCoord()
 
 	if (grip>2) {
@@ -428,6 +431,24 @@ hideCalipers() {
 	ToolTip()
 }
 
+; Find vertical lines from current position, validate 15-10-5 boxes
+findLines(x1) {
+	asc := ["|<grid1_2>*223$5.9IV248EV248EY",
+			"|<grid2_2>*223$5.82c2080U2080Y",
+]
+	; hideCalipers() 
+	; for key,val in asc
+	; {
+	; 	lines := FindText(&X,&Y,)
+	; 	if (duration:=scaleTick(val)) {
+	; 		drawCalipers()
+	; 		return duration
+	; 	}
+	; }
+	drawCalipers()
+	return false
+
+}
 
 ; Draw vertical line at X
 drawVline(X) {
