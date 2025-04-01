@@ -288,7 +288,6 @@ Calibrate() {
 	}
 
 	findTick(*) {
-		OutputDebug("============ FIND TICK ===============`n")
 		hideCalipers()
 		cWinProgress.Show("x100 y100 Autosize")
 
@@ -307,7 +306,6 @@ Calibrate() {
 	}
 	scaleTick(text) {
 		RegExMatch(text,"^\|\<(.*?)\>",&label)
-		OutputDebug(label[1] "`n")
 		cWinProgress["Label"].value := label[1]
 		loop 4
 		{
