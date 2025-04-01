@@ -1,6 +1,6 @@
 /*  Calipers
-	Portable AHK2 based tool for on-screen measurements.
-	COMET - Calipers On-screen Measurement Electronic Tool
+	Portable AHKv2 based tool for on-screen measurements.
+	COMET - Calipers On-screen MEasurement Tool
 */
 
 #Requires AutoHotkey v2
@@ -101,7 +101,7 @@ MainGUI() {
 
 		if (calState.Active) {
 			mouseCoord()
-			scaleTooltip()
+			; scaleTooltip()
 			drawCalipers()																; Redraw calipers
 			phase["March"].Enabled := true
 			phase["Calibrate"].Enabled := true
@@ -122,7 +122,13 @@ MainGUI() {
 	}
 
 	btnCalibrate(*) {
+		phase.Hide()
+		cal0 := [calArray[1],calArray[2]]
 		Calibrate()
+		calArray[1]:=cal0[1]
+		calArray[2]:=cal0[2]
+		drawCalipers()
+		phase.Show()
 	}
 
 	btnCalculate(*) {
@@ -153,6 +159,10 @@ MainGUI() {
 			valQTc := Round(valQT/Sqrt(valRR/1000))
 			resQTc.Text := valQTc " ms"
 		}
+		if (resRR.Text)&&(resQT.Text) {													; Calculate if RR an QT values exist
+			valQTc := Round(valQT/Sqrt(valRR/1000))
+			resQTc.Text := valQTc " ms"
+		}
 	}
 }
 menuAbout(*) {
@@ -162,7 +172,7 @@ menuAbout(*) {
 	about.pic := about.AddPicture("w64",
 		FileExist("comet.exe") ? "comet.exe" : "")
 	about.txt1 := about.AddText("",
-			"[C]aliper [O]n-screen [M]easure [E]lectronic [T]ool"
+			"[C]aliper [O]n-screen [ME]asurement [T]ool"
 			)
 	about.txt2 := about.AddText("Center",
 			"Electronic Screen Calipers`n"
@@ -208,26 +218,59 @@ menuInstr(*) {
 Calibrate() {
 	global calArray, scale, mLast
 
+	asc := [
+		"|<tick_B>*150$25.01k000s000Q000C00070003U001k000s000Q07zzzw0001",
+		"|<tick_T>*160$16.003zzk200Q01k0700Q01k0700Q01k070082",
+		"|<line_Muse>*200$3.GuGGGGGGU",
+		"|<line_Holter>*215$3.GLGGGGGGGU",
+		"|<line_SolidHV>*223$5.9wV248EV248EY",
+		"|<line_AltHV>*223$5.82c2080U2080Y",
+		"|<line_SolidV>*223$5.9IV248EV248EY"
+	]
+	cWinProgress := Gui()
+	cWinProgress.Title := "Auto calibration"
+	cWinProgress.AddProgress("w200 cBlue Center vProgress")
+	cWinProgress.AddText("w200 vLabel Center","")
+	cWinProgress.Opt("+AlwaysOnTop -SysMenu")
+		
+	if (duration:=findTick()) {
+		dx := calDiff()/duration
+		loop (duration-1) {
+			drawVline(calArray[1]+dx*A_Index)
+		}
+		UpdateLayeredWindow(GdipOBJ.hwnd, GdipOBJ.hdc,scr.X,scr.Y,scr.W,scr.H)			; Refresh viewport
+		chk:=MsgBox("Is this " duration " sec?","Auto calibration","YesNo 0x40000")
+		drawCalipers()
+		if (chk="Yes") {
+			ms := duration*1000
+			cWinTooltip()
+			return
+		}
+	}
+
 	cWin := Gui()
 	cWin.AddText("w200 Center","Select calibration measurement")
 	cWin.AddButton("w200","1000 ms (good)").OnEvent("Click",cBtnClicked)
 	cWin.AddButton("w200","2000 ms (better)").OnEvent("Click",cBtnClicked)
 	cWin.AddButton("w200","3000 ms (best)").OnEvent("Click",cBtnClicked)
-	cWin.AddButton("w200","Other").OnEvent("Click",cBtnClicked)
 	cWin.Title := "Calibrate"
 	cWin.OnEvent("Close",cWinClose)
 	cWin.Opt("+AlwaysOnTop -MaximizeBox -MinimizeBox")
-	cWin.Show("Center Autosize")
+	cWin.Show("x100 y100 Autosize")
 	ms := 0
 
 	WinWaitClose("Calibrate")
-	if (ms) {
-		dx := calDiff()
-		scale := dx/ms
-		MouseMove(calArray[2],mLast.Y)
-		scaleTooltip() 
-	}
+	cWinTooltip()
 	Return
+	
+	cWinTooltip() {
+		if (ms) {
+			dx := calDiff()
+			scale := dx/ms
+			MouseMove(calArray[2],mLast.Y)
+			scaleTooltip() 
+		}
+	}
 
 	cBtnClicked(Button,*) {
 		x := Button.Text
@@ -238,14 +281,117 @@ Calibrate() {
 				ms := 2000
 			case x~="3000": 
 				ms := 3000
-			case x~="Other":
-				ms := InputBox("Enter time (ms)","Other duration").Value
 		}
 		cWin.Destroy()
 	}
 	
 	cWinClose(*) {
 		return
+	}
+
+	findTick(*) {
+		hideCalipers()
+		cWinProgress.Show("x100 y100 Autosize")
+
+		for key,val in asc
+		{
+			cWinProgress["Progress"].value := key * (100/asc.Length)
+			if (duration:=scaleTick(val)) {
+				cWinProgress.Destroy()
+				drawCalipers()
+				return duration
+			}
+		}
+		cWinProgress.Destroy()
+		drawCalipers()
+		return false
+	}
+	scaleTick(text) {
+		RegExMatch(text,"^\|\<(.*?)\>",&label)
+		cWinProgress["Label"].value := label[1]
+		loop 4
+		{
+			scale := 0.1*(A_Index-1)+1
+			ok:=FindText(&X, &Y, 0, 0, scr.W, scr.H, 0.1, 0, text,,,,,,,scale,scale)
+			if (ok=0) {
+				continue
+			}
+			if InStr(label[1],"tick") {
+				if (ok.Length=1) {
+					return false
+				}
+				calArray[1]:=ok[1].x
+				calArray[2]:=ok[2].x
+				return 3
+			}
+			if InStr(label[1],"grid") {
+				RegExMatch(label[1],"_(\d)$",&duration)
+				calArray[1]:=ok[1].1
+				calArray[2]:=ok[1].1 + ok[1].3
+				return duration[1]
+			}
+			if InStr(label[1],"line") {
+				if (lines:=scanLines(&ok)) {
+					calArray[1]:=lines.x1
+					calArray[2]:=lines.x2
+					return 3
+				}
+			}
+		}
+		return false
+	}
+	scanLines(&ok) {
+		loop ok.Length
+		{
+			bars0 .= ok[A_Index].X "|"
+		}
+		bars := StrSplit(Sort(Trim(bars0,"|"),"NUD|"),"|")								; Array of unique bars, ordered
+		barX := []																		; Array for bars with common dx
+		barGroup := []																	; Array for barX matches 
+		barLn := bars.length
+
+		loop barLn
+		{
+			barA := bars[A_Index]
+			barB := ((barLn-A_Index)>1) ? bars[A_Index+1] : barA
+			barC := ((barLn-A_Index)>2) ? bars[A_Index+2] : barB
+			dx1 := barB-barA
+			dx2 := barC-barB
+			dxDiff := Abs(dx2-dx1)														; diff between two consecutive dx
+
+			if (dxDiff<=2) {															; within 2 pixels
+				barX.Push(barA)
+			} else {
+				barX.Push(barA)
+				barX.Push(barB)
+				barXln := barX.length
+				if (barXln>=5) {														; save if at least 5 boxes
+					dbar := Round((barX[barXln]-barX[1])/(barXln-1),2)
+					barX.Push("d" dbar)													; last element is avg dx
+					barGroup.Push(barX)
+				}
+				barX := []
+			}
+		}
+
+		if (barGroup.Length<2) {														; probably bad matches
+			return
+		}
+		barG := barGroup[1]																; use first matching group
+		bar1match := bar2match := ""
+		barDx := RegExReplace(barG.Pop(),"d")
+		loop barG.Length					
+		{
+			bar1 := barG[A_Index]
+			bar2 := bar1+(barDx*15)
+			loop bars.length
+			{
+				barGx := bars[A_Index]
+				if (Abs(barGx-bar2)<5) {												; find closest match +/- 5px
+					return {x1:bar1,x2:barGx}
+				}
+			}
+		}
 	}
 }
 ;#endregion
@@ -287,6 +433,9 @@ dragCaliper() {
 	global calArray, calState, mLast
 
 	grip:=FindClosest(mLast.X)															; Recheck each time, as calArray changes during March
+	if GetKeyState("Shift") {
+		findLines()
+	}
 	mPos := mouseCoord()
 
 	if (grip>2) {
@@ -332,6 +481,51 @@ drawCalipers() {
 	UpdateLayeredWindow(GdipOBJ.hwnd, GdipOBJ.hdc,scr.X,scr.Y,scr.W,scr.H)				; Refresh viewport
 
 	Return
+}
+
+; Hide caliper lines and tooltip
+hideCalipers() {
+	global GdipOBJ, scr
+	Gdip_GraphicsClear(GdipOBJ.G)
+	UpdateLayeredWindow(GdipOBJ.hwnd, GdipOBJ.hdc,scr.X,scr.Y,scr.W,scr.H)
+	ToolTip()
+}
+
+; Find vertical lines from current position
+findLines() {
+	global mLast
+	asc := ["|<solid>*250$1.zzw",														; solid vertical
+			"|<dotted>*250$1.eeg"														; hatched vertical
+		]
+	best := false
+
+	hideCalipers() 
+	for key,val in asc
+	{
+		lines := FindText(&X,&Y,mLast.X-20,mLast.Y-20,mLast.X+20,mLast.Y+20,0.1,0.1,val)
+		if !(lines) {
+			continue
+		}
+		bars0:=""
+		loop lines.Length
+		{
+			bars0 .= lines[A_Index].X "|"
+		}
+		bars := StrSplit(Sort(Trim(bars0,"|"),"NUD|"),"|")								; Array of unique bars, ordered
+		bestdx := mLast.X
+		loop bars.Length
+		{
+			dx := Abs(bars[A_Index]-mLast.X)
+			if (dx<bestdx) {
+				bestdx := dx
+				best := bars[A_Index]
+			}
+		}
+	}
+	if (best) {
+		MouseMove(best,mLast.Y)
+	}
+	return
 }
 
 ; Draw vertical line at X
@@ -536,3 +730,4 @@ ExitFunc(ExitReason, ExitCode)
 
 ;#region === INCLUDES FOLLOW ===========================================================
 #Include Gdip_All.ahk
+#Include FindText_v2.ahk
