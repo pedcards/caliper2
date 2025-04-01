@@ -329,8 +329,11 @@ Calibrate() {
 				return duration[1]
 			}
 			if InStr(label[1],"line") {
-				; ln := ok.Length
-				scanLines(&ok)
+				if (lines:=scanLines(&ok)) {
+					calArray[1]:=lines.x1
+					calArray[2]:=lines.x2
+					return 3
+				}
 			}
 		}
 		return false
