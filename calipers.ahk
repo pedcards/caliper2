@@ -495,6 +495,7 @@ findLines() {
 	asc := ["|<solid>*250$1.zzw",														; solid vertical
 			"|<dotted>*250$1.eeg"														; hatched vertical
 		]
+	best := false
 
 	hideCalipers() 
 	for key,val in asc
@@ -518,7 +519,9 @@ findLines() {
 			}
 		}
 	}
-	MouseMove(best,mLast.Y)
+	if (best) {
+		MouseMove(best,mLast.Y)
+	}
 	return
 }
 
