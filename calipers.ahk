@@ -155,6 +155,10 @@ MainGUI() {
 			valQTc := Round(valQT/Sqrt(valRR/1000))
 			resQTc.Text := valQTc " ms"
 		}
+		if (resRR.Text)&&(resQT.Text) {													; Calculate if RR an QT values exist
+			valQTc := Round(valQT/Sqrt(valRR/1000))
+			resQTc.Text := valQTc " ms"
+		}
 	}
 }
 menuAbout(*) {
