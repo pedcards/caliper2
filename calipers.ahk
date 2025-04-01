@@ -492,8 +492,8 @@ hideCalipers() {
 ; Find vertical lines from current position
 findLines() {
 	global mLast
-	asc := ["|<grid1_2>*223$1.zzw",														; solid vertical
-			"|<grid2_2>*223$1.eeg"														; hatched vertical
+	asc := ["|<solid>*250$1.zzw",														; solid vertical
+			"|<dotted>*250$1.eeg"														; hatched vertical
 		]
 
 	hideCalipers() 
