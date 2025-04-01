@@ -340,51 +340,53 @@ Calibrate() {
 		{
 			bars .= ok[A_Index].X "|"
 		}
-		bars := StrSplit(Sort(Trim(bars,"|"),"NUD|"),"|")
-		barX := []
-		barGroup := []
-		barLast := 0
-		loop bars.length
+		bars := StrSplit(Sort(Trim(bars,"|"),"NUD|"),"|")								; Array of unique bars, ordered
+		barX := []																		; Array for bars with common dx
+		barGroup := []																	; Array for barX matches 
+		barLn := bars.length
+
+		loop barLn
 		{
-			bar1 := barLast
-			bar2 := bars[A_Index]
-			dbar := Abs(bar2-bar1)
-			barX.Push(bar2)
-			if (barX.Length<3) {
-				barLast := bar2
-				dbarLast := dBar
-				continue
-			}
-			if (Abs(dbar-dbarLast)>1) {
-				if (barX.Length=2) {
-					barLast := bar2
-					dbarLast := dbar
-					continue
+			barA := bars[A_Index]
+			barB := ((barLn-A_Index)>1) ? bars[A_Index+1] : barA
+			barC := ((barLn-A_Index)>2) ? bars[A_Index+2] : barB
+			dx1 := barB-barA
+			dx2 := barC-barB
+			dxDiff := Abs(dx2-dx1)														; diff between two consecutive dx
+
+			if (dxDiff<=2) {															; within 2 pixels
+				barX.Push(barA)
+			} else {
+				barX.Push(barA)
+				barX.Push(barB)
+				barXln := barX.length
+				if (barXln>=5) {														; save if at least 5 boxes
+					dbar := Round((barX[barXln]-barX[1])/(barXln-1),2)
+					barX.Push("d" dbar)													; last element is avg dx
+					barGroup.Push(barX)
 				}
-				barX.Pop()
-				barX.Push(dbarLast)
-				barGroup.Push(barX)
 				barX := []
-			} 
-			barLast := bar2
-			dbarLast := dbar
-		}
-		barGroup.Push(barX)
-
-		barG := barGroup[1]
-		barDx := barG.Pop()
-		barLn := barG.Length
-		bar1 := barG[1]
-		bar2 := bar1+(barDx*15)
-		loop bars.length
-		{
-			barGx := bars[A_Index]
-			if (Abs(barGx-bar2)<5) {
-				bar2 := barGx
 			}
 		}
 
-		; UpdateLayeredWindow(GdipOBJ.hwnd, GdipOBJ.hdc,scr.X,scr.Y,scr.W,scr.H)				; Refresh viewport
+		if (barGroup.Length<2) {														; probably bad matches
+			return
+		}
+		barG := barGroup[1]																; use first matching group
+		bar1match := bar2match := ""
+		barDx := RegExReplace(barG.Pop(),"d")
+		loop barG.Length					
+		{
+			bar1 := barG[A_Index]
+			bar2 := bar1+(barDx*15)
+			loop bars.length
+			{
+				barGx := bars[A_Index]
+				if (Abs(barGx-bar2)<5) {												; find closest match +/- 5px
+					return {x1:bar1,x2:barGx}
+				}
+			}
+		}
 	}
 }
 ;#endregion
