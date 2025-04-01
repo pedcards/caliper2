@@ -1,14 +1,6 @@
 /*  Calipers
 	Portable AHKv2 based tool for on-screen measurements.
 	COMET - Calipers On-screen MEasurement Tool
-
-	TODO:
-	* Scan for 3 sec tick marks
-		- use FindText to identify up and down ticks https://www.autohotkey.com/boards/viewtopic.php?f=83&t=116471
-		- ImageActions, wrapper class for FindText https://www.autohotkey.com/boards/viewtopic.php?f=83&t=135206
-		- Maybe use iseahound's ImagePut https://www.autohotkey.com/boards/viewtopic.php?f=83&t=76633
-	* Custom toggle icons
-	 	- GpGFX modern replacement for Gdiplus lib? https://www.autohotkey.com/boards/viewtopic.php?f=83&t=136401
 */
 
 #Requires AutoHotkey v2
