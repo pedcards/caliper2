@@ -341,9 +341,9 @@ Calibrate() {
 	scanLines(&ok) {
 		loop ok.Length
 		{
-			bars .= ok[A_Index].X "|"
+			bars0 .= ok[A_Index].X "|"
 		}
-		bars := StrSplit(Sort(Trim(bars,"|"),"NUD|"),"|")								; Array of unique bars, ordered
+		bars := StrSplit(Sort(Trim(bars0,"|"),"NUD|"),"|")								; Array of unique bars, ordered
 		barX := []																		; Array for bars with common dx
 		barGroup := []																	; Array for barX matches 
 		barLn := bars.length
@@ -504,11 +504,12 @@ findLines() {
 		if !(lines) {
 			continue
 		}
+		bars0:=""
 		loop lines.Length
 		{
-			bars .= lines[A_Index].X "|"
+			bars0 .= lines[A_Index].X "|"
 		}
-		bars := StrSplit(Sort(Trim(bars,"|"),"NUD|"),"|")								; Array of unique bars, ordered
+		bars := StrSplit(Sort(Trim(bars0,"|"),"NUD|"),"|")								; Array of unique bars, ordered
 		bestdx := mLast.X
 		loop bars.Length
 		{
