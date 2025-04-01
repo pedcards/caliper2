@@ -432,7 +432,7 @@ dragCaliper() {
 
 	grip:=FindClosest(mLast.X)															; Recheck each time, as calArray changes during March
 	if GetKeyState("Shift") {
-		findLines(mLast.X)
+		findLines()
 	}
 	mPos := mouseCoord()
 
@@ -489,23 +489,37 @@ hideCalipers() {
 	ToolTip()
 }
 
-; Find vertical lines from current position, validate 15-10-5 boxes
-findLines(x1) {
-	asc := ["|<grid1_2>*223$5.9IV248EV248EY",
-			"|<grid2_2>*223$5.82c2080U2080Y",
-]
-	; hideCalipers() 
-	; for key,val in asc
-	; {
-	; 	lines := FindText(&X,&Y,)
-	; 	if (duration:=scaleTick(val)) {
-	; 		drawCalipers()
-	; 		return duration
-	; 	}
-	; }
-	drawCalipers()
-	return false
+; Find vertical lines from current position
+findLines() {
+	global mLast
+	asc := ["|<grid1_2>*223$1.zzw",														; solid vertical
+			"|<grid2_2>*223$1.eeg"														; hatched vertical
+		]
 
+	hideCalipers() 
+	for key,val in asc
+	{
+		lines := FindText(&X,&Y,mLast.X-20,mLast.Y-20,mLast.X+20,mLast.Y+20,0.1,0.1,val)
+		if !(lines) {
+			continue
+		}
+		loop lines.Length
+		{
+			bars .= lines[A_Index].X "|"
+		}
+		bars := StrSplit(Sort(Trim(bars,"|"),"NUD|"),"|")								; Array of unique bars, ordered
+		bestdx := mLast.X
+		loop bars.Length
+		{
+			dx := Abs(bars[A_Index]-mLast.X)
+			if (dx<bestdx) {
+				bestdx := dx
+				best := bars[A_Index]
+			}
+		}
+	}
+	MouseMove(best,mLast.Y)
+	return
 }
 
 ; Draw vertical line at X
