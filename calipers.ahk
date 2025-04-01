@@ -231,7 +231,13 @@ Calibrate() {
 	cWinProgress.Opt("+AlwaysOnTop -SysMenu")
 		
 	if (duration:=findTick()) {
-		chk:=MsgBox("Is this " duration " sec?","Auto calibration","YesNo")
+		dx := calDiff()/duration
+		loop (duration-1) {
+			drawVline(calArray[1]+dx*A_Index)
+		}
+		UpdateLayeredWindow(GdipOBJ.hwnd, GdipOBJ.hdc,scr.X,scr.Y,scr.W,scr.H)			; Refresh viewport
+		chk:=MsgBox("Is this " duration " sec?","Auto calibration","YesNo 0x40000")
+		drawCalipers()
 		if (chk="Yes") {
 			ms := duration*1000
 			cWinTooltip()
