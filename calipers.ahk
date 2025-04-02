@@ -336,11 +336,7 @@ Calibrate() {
 		return false
 	}
 	scanLines(&ok) {
-		loop ok.Length
-		{
-			bars0 .= ok[A_Index].X "|"
-		}
-		bars := StrSplit(Sort(Trim(bars0,"|"),"NUD|"),"|")								; Array of unique bars, ordered
+		bars := collateLines(ok)
 		barX := []																		; Array for bars with common dx
 		barGroup := []																	; Array for barX matches 
 		barLn := bars.length
@@ -373,7 +369,6 @@ Calibrate() {
 			return
 		}
 		barG := barGroup[1]																; use first matching group
-		bar1match := bar2match := ""
 		barDx := RegExReplace(barG.Pop(),"d")
 		loop barG.Length					
 		{
@@ -486,6 +481,17 @@ hideCalipers() {
 	ToolTip()
 }
 
+; Get list of unique X-lines in object, return sorted array
+collateLines(pre) {
+	loop pre.length
+	{
+		bars0 .= pre[A_Index].X "|"
+	}
+	bars0 := Sort(Trim(bars0,"|"),"NUD|")
+	bars := StrSplit(bars0,"|")
+	return bars
+}
+
 ; Find vertical lines from current position
 findLines() {
 	global mLast
@@ -501,12 +507,7 @@ findLines() {
 		if !(lines) {
 			continue
 		}
-		bars0:=""
-		loop lines.Length
-		{
-			bars0 .= lines[A_Index].X "|"
-		}
-		bars := StrSplit(Sort(Trim(bars0,"|"),"NUD|"),"|")								; Array of unique bars, ordered
+		bars := collateLines(lines)
 		bestdx := mLast.X
 		loop bars.Length
 		{
