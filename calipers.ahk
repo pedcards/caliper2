@@ -123,11 +123,7 @@ MainGUI() {
 
 	btnCalibrate(*) {
 		phase.Hide()
-		cal0 := [calArray[1],calArray[2]]
 		Calibrate()
-		calArray[1]:=cal0[1]
-		calArray[2]:=cal0[2]
-		drawCalipers()
 		phase.Show()
 	}
 
