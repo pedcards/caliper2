@@ -101,13 +101,12 @@ MainGUI() {
 
 		if (calState.Active) {
 			mouseCoord()
-			; scaleTooltip()
 			drawCalipers()																; Redraw calipers
 			phase["March"].Enabled := true
 			phase["Calibrate"].Enabled := true
 			phase["Calculate"].Enabled := true
 		} else {
-			UpdateLayeredWindow(GdipOBJ.hwnd, GdipOBJ.hdc,scr.X,scr.Y,scr.W,scr.H)		; Clear bitmap
+			Refresh_window()
 			ToolTip()
 			phase["March"].Enabled := false
 			phase["Calibrate"].Enabled := false
@@ -234,7 +233,7 @@ Calibrate() {
 		loop (duration-1) {
 			drawVline(calArray[1]+dx*A_Index)
 		}
-		UpdateLayeredWindow(GdipOBJ.hwnd, GdipOBJ.hdc,scr.X,scr.Y,scr.W,scr.H)			; Refresh viewport
+		Refresh_window()
 		chk:=MsgBox("Is this " duration " sec?","Auto calibration","YesNo 0x40000")
 		drawCalipers()
 		if (chk="Yes") {
@@ -474,7 +473,7 @@ drawCalipers() {
 		drawVline(calArray[A_Index])
 	}
 	drawHline(mLast.Y)
-	UpdateLayeredWindow(GdipOBJ.hwnd, GdipOBJ.hdc,scr.X,scr.Y,scr.W,scr.H)				; Refresh viewport
+	Refresh_window()
 
 	Return
 }
@@ -483,7 +482,7 @@ drawCalipers() {
 hideCalipers() {
 	global GdipOBJ, scr
 	Gdip_GraphicsClear(GdipOBJ.G)
-	UpdateLayeredWindow(GdipOBJ.hwnd, GdipOBJ.hdc,scr.X,scr.Y,scr.W,scr.H)
+	Refresh_window()
 	ToolTip()
 }
 
@@ -709,6 +708,10 @@ Create_Layered_GUI(Layered)
 {
     baseWin := Gui("-Caption +E0x80000 +LastFound +AlwaysOnTop +ToolWindow +OwnDialogs")
     baseWin.Show("NA")
+}
+
+Refresh_window() {
+	UpdateLayeredWindow(GdipOBJ.hwnd, GdipOBJ.hdc,scr.X,scr.Y,scr.W,scr.H)
 }
 
 New_Pen(colour:="000000",Alpha:="FF",Width:= 5) {
