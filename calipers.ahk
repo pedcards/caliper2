@@ -101,13 +101,12 @@ MainGUI() {
 
 		if (calState.Active) {
 			mouseCoord()
-			; scaleTooltip()
 			drawCalipers()																; Redraw calipers
 			phase["March"].Enabled := true
 			phase["Calibrate"].Enabled := true
 			phase["Calculate"].Enabled := true
 		} else {
-			UpdateLayeredWindow(GdipOBJ.hwnd, GdipOBJ.hdc,scr.X,scr.Y,scr.W,scr.H)		; Clear bitmap
+			Refresh_window()
 			ToolTip()
 			phase["March"].Enabled := false
 			phase["Calibrate"].Enabled := false
@@ -123,11 +122,7 @@ MainGUI() {
 
 	btnCalibrate(*) {
 		phase.Hide()
-		cal0 := [calArray[1],calArray[2]]
 		Calibrate()
-		calArray[1]:=cal0[1]
-		calArray[2]:=cal0[2]
-		drawCalipers()
 		phase.Show()
 	}
 
@@ -238,7 +233,7 @@ Calibrate() {
 		loop (duration-1) {
 			drawVline(calArray[1]+dx*A_Index)
 		}
-		UpdateLayeredWindow(GdipOBJ.hwnd, GdipOBJ.hdc,scr.X,scr.Y,scr.W,scr.H)			; Refresh viewport
+		Refresh_window()
 		chk:=MsgBox("Is this " duration " sec?","Auto calibration","YesNo 0x40000")
 		drawCalipers()
 		if (chk="Yes") {
@@ -341,11 +336,7 @@ Calibrate() {
 		return false
 	}
 	scanLines(&ok) {
-		loop ok.Length
-		{
-			bars0 .= ok[A_Index].X "|"
-		}
-		bars := StrSplit(Sort(Trim(bars0,"|"),"NUD|"),"|")								; Array of unique bars, ordered
+		bars := collateLines(ok)
 		barX := []																		; Array for bars with common dx
 		barGroup := []																	; Array for barX matches 
 		barLn := bars.length
@@ -378,7 +369,6 @@ Calibrate() {
 			return
 		}
 		barG := barGroup[1]																; use first matching group
-		bar1match := bar2match := ""
 		barDx := RegExReplace(barG.Pop(),"d")
 		loop barG.Length					
 		{
@@ -478,7 +468,7 @@ drawCalipers() {
 		drawVline(calArray[A_Index])
 	}
 	drawHline(mLast.Y)
-	UpdateLayeredWindow(GdipOBJ.hwnd, GdipOBJ.hdc,scr.X,scr.Y,scr.W,scr.H)				; Refresh viewport
+	Refresh_window()
 
 	Return
 }
@@ -487,8 +477,19 @@ drawCalipers() {
 hideCalipers() {
 	global GdipOBJ, scr
 	Gdip_GraphicsClear(GdipOBJ.G)
-	UpdateLayeredWindow(GdipOBJ.hwnd, GdipOBJ.hdc,scr.X,scr.Y,scr.W,scr.H)
+	Refresh_window()
 	ToolTip()
+}
+
+; Get list of unique X-lines in object, return sorted array
+collateLines(pre) {
+	loop pre.length
+	{
+		bars0 .= pre[A_Index].X "|"
+	}
+	bars0 := Sort(Trim(bars0,"|"),"NUD|")
+	bars := StrSplit(bars0,"|")
+	return bars
 }
 
 ; Find vertical lines from current position
@@ -506,12 +507,7 @@ findLines() {
 		if !(lines) {
 			continue
 		}
-		bars0:=""
-		loop lines.Length
-		{
-			bars0 .= lines[A_Index].X "|"
-		}
-		bars := StrSplit(Sort(Trim(bars0,"|"),"NUD|"),"|")								; Array of unique bars, ordered
+		bars := collateLines(lines)
 		bestdx := mLast.X
 		loop bars.Length
 		{
@@ -713,6 +709,10 @@ Create_Layered_GUI(Layered)
 {
     baseWin := Gui("-Caption +E0x80000 +LastFound +AlwaysOnTop +ToolWindow +OwnDialogs")
     baseWin.Show("NA")
+}
+
+Refresh_window() {
+	UpdateLayeredWindow(GdipOBJ.hwnd, GdipOBJ.hdc,scr.X,scr.Y,scr.W,scr.H)
 }
 
 New_Pen(colour:="000000",Alpha:="FF",Width:= 5) {
