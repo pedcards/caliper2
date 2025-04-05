@@ -163,54 +163,57 @@ MainGUI() {
 			resQTc.Text := valQTc " ms"
 		}
 	}
-}
-menuAbout(*) {
-	about := Gui()
-	about.w := 300
-	about.Opt("+AlwaysOnTop -SysMenu -Caption")
-	about.pic := about.AddPicture("w64",
-		FileExist("comet.exe") ? "comet.exe" : "")
-	about.txt1 := about.AddText("",
-			"[C]aliper [O]n-screen [ME]asurement [T]ool"
-			)
-	about.txt2 := about.AddText("Center",
-			"Electronic Screen Calipers`n"
-			"`"Care enough to measure.`"`n`n"
-			)
-	about.txt3 := about.AddText("Center","COMET v2.0`n(c)2025 Terrence Chun, MD")
-	about.OK := about.AddButton("","OK")
-	about.OK.OnEvent("Click", (*)=>about.Destroy())
-	about.Show("Hide w" about.w)
-
-	centerCtrl(about.pic)
-	centerCtrl(about.txt1)
-	centerCtrl(about.txt2)
-	centerCtrl(about.txt3)
-	centerCtrl(about.OK)
-	about.Show()
-	return
-
-	centerCtrl(ctl) {
-		ControlGetPos(,,&w,,ctl)
-		ControlMove((about.w-w)//2,,,,ctl)
+	menuOpen(*) {
+		phase.Show
 	}
-}
-menuInstr(*) {
-	txt := "[ ] Calipers`n"
-		. "    Toggles calipers on and off`n"
-		. "    You can resize by dragging the L or R caliper`n`n"
-		. "[ ] March out`n"
-		. "    Toggles the `"march out`" function`n"
-		. "    You can drag individual calipers to fine-tune markings`n`n"
-		. "[Calibrate]`n"
-		. "    Move the calipers to desired position (1000 [5 big boxes],`n"
-		. "    2000 [10 big boxes], or 3000 [15 big boxes] ms),`n"
-		. "    then click here to set the calibration.`n`n"
-		. "[Calculate]`n"
-		. "    Drops a calculator for QTc`n"
-		. "    Draw a caliper, then click each button to insert values`n"
-		. "    and to calculate QTc"
-	MsgBox(txt,"Instructions")
+	menuAbout(*) {
+		about := Gui()
+		about.w := 300
+		about.Opt("+AlwaysOnTop -SysMenu -Caption")
+		about.pic := about.AddPicture("w64",
+			FileExist("comet.exe") ? "comet.exe" : "")
+		about.txt1 := about.AddText("",
+				"[C]aliper [O]n-screen [ME]asurement [T]ool"
+				)
+		about.txt2 := about.AddText("Center",
+				"Electronic Screen Calipers`n"
+				"`"Care enough to measure.`"`n`n"
+				)
+		about.txt3 := about.AddText("Center","COMET v2.0`n(c)2025 Terrence Chun, MD")
+		about.OK := about.AddButton("","OK")
+		about.OK.OnEvent("Click", (*)=>about.Destroy())
+		about.Show("Hide w" about.w)
+	
+		centerCtrl(about.pic)
+		centerCtrl(about.txt1)
+		centerCtrl(about.txt2)
+		centerCtrl(about.txt3)
+		centerCtrl(about.OK)
+		about.Show()
+		return
+	
+		centerCtrl(ctl) {
+			ControlGetPos(,,&w,,ctl)
+			ControlMove((about.w-w)//2,,,,ctl)
+		}
+	}
+	menuInstr(*) {
+		txt := "[ ] Calipers`n"
+			. "    Toggles calipers on and off`n"
+			. "    You can resize by dragging the L or R caliper`n`n"
+			. "[ ] March out`n"
+			. "    Toggles the `"march out`" function`n"
+			. "    You can drag individual calipers to fine-tune markings`n`n"
+			. "[Calibrate]`n"
+			. "    Move the calipers to desired position (1000 [5 big boxes],`n"
+			. "    2000 [10 big boxes], or 3000 [15 big boxes] ms),`n"
+			. "    then click here to set the calibration.`n`n"
+			. "[Calculate]`n"
+			. "    Drops a calculator for QTc`n"
+			. "    Draw a caliper, then click each button to insert values`n"
+			. "    and to calculate QTc"
+		MsgBox(txt,"Instructions")
+	}
 }
 
 ; Calibration GUI to calculate scale
