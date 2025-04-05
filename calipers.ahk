@@ -44,7 +44,7 @@ MainGUI() {
 			valQTc:=""
 
 	phase := Gui()
-	phase.Opt("-MaximizeBox -MinimizeBox +AlwaysOnTop -ToolWindow")
+	phase.Opt("-MinimizeBox +AlwaysOnTop -ToolWindow")
 	phase.BackColor := "C2BDBE"
 	phase.Title := "TC's Cal Meas Tool"
 
@@ -73,7 +73,7 @@ MainGUI() {
 			resQTc := phase.AddText("w50 x90 yP+4",valQTc)
 	
 	phase.Show("x" scr.W * 0.8 " h60")
-	phase.OnEvent("Close",phaseClose)
+	phase.OnEvent("Close",phaseHide)
 		
 	A_IconTip := "COMET"
 	tray := A_TrayMenu
@@ -86,8 +86,8 @@ MainGUI() {
 
 	/*	Internal phaseGUI methods
 	*/
-	phaseClose(*) {
-		ask := MsgBox("Really quit Calipers?","Exit",262161)
+	phaseHide(*) {
+		phase.Minimize
 		If (ask="OK")
 		{
 			ExitApp
