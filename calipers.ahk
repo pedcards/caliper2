@@ -19,7 +19,8 @@ calState:={
 		Drag:0,																			; DRAG mode
 		Move:0,																			; MOVE mode
 		March:0,																		; MARCH mode
-		refresh:30																		; Refresh rate for timers
+		refresh:30,																		; Refresh rate for timers
+		menu:false																		; Has been minimized?
 		}
 calArray := [scr.W//2 -50,scr.W//2 +50]													; Array of X positions
 mLast := {X:0,Y:scr.H//2}																; To store mouse X,Y coords
@@ -91,9 +92,9 @@ MainGUI() {
 	*/
 	phaseHide(*) {
 		phase.Minimize
-		If (ask="OK")
-		{
-			ExitApp
+		if !(calState.menu) {
+			calState.menu := true
+			TrayTip("COMET caliper is hidden`nClick tray icon to view",,"0x24")
 		}
 	}
 
