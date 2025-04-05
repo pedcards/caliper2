@@ -78,9 +78,12 @@ MainGUI() {
 	A_IconTip := "COMET"
 	tray := A_TrayMenu
 	tray.Delete()
+	tray.Add("Open",menuOpen)
 	tray.Add("About...",menuAbout)
 	tray.Add("Instructions",menuInstr)
 	tray.Add("Quit",(*)=>ExitApp())
+	tray.Default := "Open"
+	tray.ClickCount := 1
 
 	return
 
