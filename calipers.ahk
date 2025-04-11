@@ -92,6 +92,11 @@ MainGUI() {
 	*/
 	phaseHide(*) {
 		phase.Minimize
+		if (calState.Active) {
+			Gdip_GraphicsClear(GdipOBJ.G)
+			Refresh_window()
+			ToolTip()
+		} 
 		if !(calState.menu) {
 			calState.menu := true
 			TrayTip("COMET caliper is hidden`nClick tray icon to view",,"0x24")
@@ -165,6 +170,9 @@ MainGUI() {
 	}
 	menuOpen(*) {
 		phase.Show
+		if (calState.Active) {
+			drawCalipers()																; Redraw calipers
+		} 
 	}
 	menuAbout(*) {
 		about := Gui()
