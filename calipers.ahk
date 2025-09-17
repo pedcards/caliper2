@@ -441,6 +441,12 @@ dragCaliper() {
 	if GetKeyState("Shift") {
 		findLines()
 	}
+	if GetKeyState("Left") {
+		MouseMove(-1,0,,'R')
+	}
+	if GetKeyState("Right") {
+		MouseMove(+1,0,,'R')
+	}
 	mPos := mouseCoord()
 
 	if (grip>2) {
@@ -559,6 +565,18 @@ drawHline(y) {
 moveCalipers() {
 	global calArray
 
+	if GetKeyState("Left") {
+		MouseMove(-1,0,,'R')
+	}
+	if GetKeyState("Right") {
+		MouseMove(+1,0,,'R')
+	}
+	if GetKeyState("Up") {
+		MouseMove(0,-1,,'R')
+	}
+	if GetKeyState("Down") {
+		MouseMove(0,+1,,'R')
+	}
 	mPos := mouseCoord()
 
 	for key,val in calArray
