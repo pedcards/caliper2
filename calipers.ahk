@@ -761,6 +761,23 @@ ExitFunc(ExitReason, ExitCode)
 }
 ;#endregion
 
+;#region === OTHER FUNCTIONS ===========================================================
+webcount(txt) {
+	SetTimer(httpComm.Bind(txt),-1)
+	return
+}
+httpComm(verb) {
+	url := "http://depts.washington.edu/pedcards/count/log.php?" 
+			. "do=count&to=" A_UserName ":" verb
+	
+	whr := ComObject("WinHttp.WinHttpRequest.5.1")								; initialize http request in object whr
+	whr.Open("GET"																; set the http verb to GET file "change"
+		, url)
+	whr.Send()																	; SEND the command to the address
+	Return
+}
+;#endregion
+
 ;#region === INCLUDES FOLLOW ===========================================================
 #Include Gdip_All.ahk
 #Include FindText_v2.ahk
