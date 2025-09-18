@@ -25,6 +25,7 @@ calState:={
 calArray := [scr.W//2 -50,scr.W//2 +50]													; Array of X positions
 mLast := {X:0,Y:scr.H//2}																; To store mouse X,Y coords
 scale := ""																				; Multiplier for calibration
+webcount("start")
 
 createLayeredWindow()
 MainGUI()
@@ -82,7 +83,7 @@ MainGUI() {
 	tray.Add("Open",menuOpen)
 	tray.Add("About...",menuAbout)
 	tray.Add("Instructions",menuInstr)
-	tray.Add("Quit",(*)=>ExitApp())
+	tray.Add("Quit",menuQuit)
 	tray.Default := "Open"
 	tray.ClickCount := 1
 
@@ -101,6 +102,7 @@ MainGUI() {
 			calState.menu := true
 			TrayTip("COMET caliper is hidden`nClick tray icon to view",,"0x24")
 		}
+		webcount("minimize")
 	}
 
 	toggleCaliper(*) {
@@ -114,6 +116,7 @@ MainGUI() {
 			phase["March"].Enabled := true
 			phase["Calibrate"].Enabled := true
 			phase["Calculate"].Enabled := true
+			webcount("show")
 		} else {
 			Refresh_window()
 			ToolTip()
@@ -166,6 +169,7 @@ MainGUI() {
 		if (resRR.Text)&&(resQT.Text) {													; Calculate if RR an QT values exist
 			valQTc := Round(valQT/Sqrt(valRR/1000))
 			resQTc.Text := valQTc " ms"
+			webcount("QTc")
 		}
 	}
 	menuOpen(*) {
@@ -222,6 +226,10 @@ MainGUI() {
 			. "    and to calculate QTc"
 		MsgBox(txt,"Instructions")
 	}
+	menuQuit(*) {
+		httpComm("quit")
+		ExitApp
+	}
 }
 
 ; Calibration GUI to calculate scale
@@ -254,6 +262,7 @@ Calibrate() {
 		if (chk="Yes") {
 			ms := duration*1000
 			cWinTooltip()
+			webcount("autocal")
 			return
 		}
 	}
@@ -271,6 +280,7 @@ Calibrate() {
 
 	WinWaitClose("Calibrate")
 	cWinTooltip()
+	webcount("manualcal")
 	Return
 	
 	cWinTooltip() {
