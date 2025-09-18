@@ -19,11 +19,13 @@ calState:={
 		Drag:0,																			; DRAG mode
 		Move:0,																			; MOVE mode
 		March:0,																		; MARCH mode
-		refresh:30																		; Refresh rate for timers
+		refresh:30,																		; Refresh rate for timers
+		menu:false																		; Has been minimized?
 		}
 calArray := [scr.W//2 -50,scr.W//2 +50]													; Array of X positions
 mLast := {X:0,Y:scr.H//2}																; To store mouse X,Y coords
 scale := ""																				; Multiplier for calibration
+webcount("start")
 
 createLayeredWindow()
 MainGUI()
@@ -44,7 +46,7 @@ MainGUI() {
 			valQTc:=""
 
 	phase := Gui()
-	phase.Opt("-MaximizeBox -MinimizeBox +AlwaysOnTop -ToolWindow")
+	phase.Opt("-MinimizeBox +AlwaysOnTop -ToolWindow")
 	phase.BackColor := "C2BDBE"
 	phase.Title := "TC's Cal Meas Tool"
 
@@ -73,25 +75,34 @@ MainGUI() {
 			resQTc := phase.AddText("w50 x90 yP+4",valQTc)
 	
 	phase.Show("x" scr.W * 0.8 " h60")
-	phase.OnEvent("Close",phaseClose)
+	phase.OnEvent("Close",phaseHide)
 		
 	A_IconTip := "COMET"
 	tray := A_TrayMenu
 	tray.Delete()
+	tray.Add("Open",menuOpen)
 	tray.Add("About...",menuAbout)
 	tray.Add("Instructions",menuInstr)
-	tray.Add("Quit",(*)=>ExitApp())
+	tray.Add("Quit",menuQuit)
+	tray.Default := "Open"
+	tray.ClickCount := 1
 
 	return
 
 	/*	Internal phaseGUI methods
 	*/
-	phaseClose(*) {
-		ask := MsgBox("Really quit Calipers?","Exit",262161)
-		If (ask="OK")
-		{
-			ExitApp
+	phaseHide(*) {
+		phase.Minimize
+		if (calState.Active) {
+			Gdip_GraphicsClear(GdipOBJ.G)
+			Refresh_window()
+			ToolTip()
+		} 
+		if !(calState.menu) {
+			calState.menu := true
+			TrayTip("COMET caliper is hidden`nClick tray icon to view",,"0x24")
 		}
+		webcount("minimize")
 	}
 
 	toggleCaliper(*) {
@@ -105,6 +116,7 @@ MainGUI() {
 			phase["March"].Enabled := true
 			phase["Calibrate"].Enabled := true
 			phase["Calculate"].Enabled := true
+			webcount("show")
 		} else {
 			Refresh_window()
 			ToolTip()
@@ -157,56 +169,67 @@ MainGUI() {
 		if (resRR.Text)&&(resQT.Text) {													; Calculate if RR an QT values exist
 			valQTc := Round(valQT/Sqrt(valRR/1000))
 			resQTc.Text := valQTc " ms"
+			webcount("QTc")
 		}
 	}
-}
-menuAbout(*) {
-	about := Gui()
-	about.w := 300
-	about.Opt("+AlwaysOnTop -SysMenu -Caption")
-	about.pic := about.AddPicture("w64",
-		FileExist("comet.exe") ? "comet.exe" : "")
-	about.txt1 := about.AddText("",
-			"[C]aliper [O]n-screen [ME]asurement [T]ool"
-			)
-	about.txt2 := about.AddText("Center",
-			"Electronic Screen Calipers`n"
-			"`"Care enough to measure.`"`n`n"
-			)
-	about.txt3 := about.AddText("Center","COMET v2.0`n(c)2025 Terrence Chun, MD")
-	about.OK := about.AddButton("","OK")
-	about.OK.OnEvent("Click", (*)=>about.Destroy())
-	about.Show("Hide w" about.w)
-
-	centerCtrl(about.pic)
-	centerCtrl(about.txt1)
-	centerCtrl(about.txt2)
-	centerCtrl(about.txt3)
-	centerCtrl(about.OK)
-	about.Show()
-	return
-
-	centerCtrl(ctl) {
-		ControlGetPos(,,&w,,ctl)
-		ControlMove((about.w-w)//2,,,,ctl)
+	menuOpen(*) {
+		phase.Show
+		if (calState.Active) {
+			drawCalipers()																; Redraw calipers
+		} 
 	}
-}
-menuInstr(*) {
-	txt := "[ ] Calipers`n"
-		. "    Toggles calipers on and off`n"
-		. "    You can resize by dragging the L or R caliper`n`n"
-		. "[ ] March out`n"
-		. "    Toggles the `"march out`" function`n"
-		. "    You can drag individual calipers to fine-tune markings`n`n"
-		. "[Calibrate]`n"
-		. "    Move the calipers to desired position (1000 [5 big boxes],`n"
-		. "    2000 [10 big boxes], or 3000 [15 big boxes] ms),`n"
-		. "    then click here to set the calibration.`n`n"
-		. "[Calculate]`n"
-		. "    Drops a calculator for QTc`n"
-		. "    Draw a caliper, then click each button to insert values`n"
-		. "    and to calculate QTc"
-	MsgBox(txt,"Instructions")
+	menuAbout(*) {
+		about := Gui()
+		about.w := 300
+		about.Opt("+AlwaysOnTop -SysMenu -Caption")
+		about.pic := about.AddPicture("w64",
+			FileExist("comet.exe") ? "comet.exe" : "")
+		about.txt1 := about.AddText("",
+				"[C]aliper [O]n-screen [ME]asurement [T]ool"
+				)
+		about.txt2 := about.AddText("Center",
+				"Electronic Screen Calipers`n"
+				"`"Care enough to measure.`"`n`n"
+				)
+		about.txt3 := about.AddText("Center","COMET v2.0`n(c)2025 Terrence Chun, MD")
+		about.OK := about.AddButton("","OK")
+		about.OK.OnEvent("Click", (*)=>about.Destroy())
+		about.Show("Hide w" about.w)
+	
+		centerCtrl(about.pic)
+		centerCtrl(about.txt1)
+		centerCtrl(about.txt2)
+		centerCtrl(about.txt3)
+		centerCtrl(about.OK)
+		about.Show()
+		return
+	
+		centerCtrl(ctl) {
+			ControlGetPos(,,&w,,ctl)
+			ControlMove((about.w-w)//2,,,,ctl)
+		}
+	}
+	menuInstr(*) {
+		txt := "[ ] Calipers`n"
+			. "    Toggles calipers on and off`n"
+			. "    You can resize by dragging the L or R caliper`n`n"
+			. "[ ] March out`n"
+			. "    Toggles the `"march out`" function`n"
+			. "    You can drag individual calipers to fine-tune markings`n`n"
+			. "[Calibrate]`n"
+			. "    Move the calipers to desired position (1000 [5 big boxes],`n"
+			. "    2000 [10 big boxes], or 3000 [15 big boxes] ms),`n"
+			. "    then click here to set the calibration.`n`n"
+			. "[Calculate]`n"
+			. "    Drops a calculator for QTc`n"
+			. "    Draw a caliper, then click each button to insert values`n"
+			. "    and to calculate QTc"
+		MsgBox(txt,"Instructions")
+	}
+	menuQuit(*) {
+		httpComm("quit")
+		ExitApp
+	}
 }
 
 ; Calibration GUI to calculate scale
@@ -239,6 +262,7 @@ Calibrate() {
 		if (chk="Yes") {
 			ms := duration*1000
 			cWinTooltip()
+			webcount("autocal")
 			return
 		}
 	}
@@ -256,6 +280,7 @@ Calibrate() {
 
 	WinWaitClose("Calibrate")
 	cWinTooltip()
+	webcount("manualcal")
 	Return
 	
 	cWinTooltip() {
@@ -426,6 +451,12 @@ dragCaliper() {
 	if GetKeyState("Shift") {
 		findLines()
 	}
+	if GetKeyState("Left") {
+		MouseMove(-1,0,,'R')
+	}
+	if GetKeyState("Right") {
+		MouseMove(+1,0,,'R')
+	}
 	mPos := mouseCoord()
 
 	if (grip>2) {
@@ -544,6 +575,18 @@ drawHline(y) {
 moveCalipers() {
 	global calArray
 
+	if GetKeyState("Left") {
+		MouseMove(-1,0,,'R')
+	}
+	if GetKeyState("Right") {
+		MouseMove(+1,0,,'R')
+	}
+	if GetKeyState("Up") {
+		MouseMove(0,-1,,'R')
+	}
+	if GetKeyState("Down") {
+		MouseMove(0,+1,,'R')
+	}
 	mPos := mouseCoord()
 
 	for key,val in calArray
@@ -725,6 +768,23 @@ ExitFunc(ExitReason, ExitCode)
    global
    ; gdi+ may now be shutdown on exiting the program
    Gdip_Shutdown(GdipOBJ.Token)
+}
+;#endregion
+
+;#region === OTHER FUNCTIONS ===========================================================
+webcount(txt) {
+	SetTimer(httpComm.Bind(txt),-1)
+	return
+}
+httpComm(verb) {
+	url := "http://depts.washington.edu/pedcards/count/log.php?" 
+			. "do=count&to=" A_UserName ":" verb
+	
+	whr := ComObject("WinHttp.WinHttpRequest.5.1")								; initialize http request in object whr
+	whr.Open("GET"																; set the http verb to GET file "change"
+		, url)
+	whr.Send()																	; SEND the command to the address
+	Return
 }
 ;#endregion
 
