@@ -30,6 +30,13 @@ webcount("start")
 createLayeredWindow()
 MainGUI()
 
+#HotIf (winID:=WinActive('ahk_exe msedge.exe')) && (WinGetTitle('ahk_id ' winID)~="General|Cardiac")
+^Left::clickPicIX("prev")
+^Right::clickPicIX("next")
+^Up::clickPicIX("zoom")
+^Down::clickPicIX("down")
+#HotIf 
+
 OnMessage(0x201, WM_LBUTTONDOWN)														; LMB press
 OnMessage(0x202, WM_LBUTTONUP)															; LMB release
 OnMessage(0x020, WM_SETCURSOR)
@@ -786,8 +793,41 @@ httpComm(verb) {
 	whr.Send()																	; SEND the command to the address
 	Return
 }
+clickPicIX(action) {
+	hwnd := WinActive("ahk_exe msedge.exe")
+	frame := UIA.ElementFromHandle(hwnd)
+
+	try switch action
+	{
+	case "prev":
+		btn := frame.FindElement({Type:'Button',Name:'Previous Page'})
+		btn.Click()
+	case "next":
+		btn := frame.FindElement({Type:'Button',Name:'Next Page'})
+		btn.Click()
+	case "zoom":
+		group := frame
+					.FindElement({Type:'DataItem',Name:'Change Tile:'})					; First "Change Tile:" label
+					.WalkTree("p2")
+		combo := group.FindElement({Type:"ComboBox"})									; Find first combo box
+		
+		if (combo.WalkTree("p1").Name = "Strip") {
+			combo.Expand()
+			compressed := combo.WaitElement({Name:'Compressed Wave'},5000)				; updated droplist
+			compressed.Click()
+		}
+	case "down":
+		try {
+			btn := frame.FindElement({Type:'Button',Name:'Restore Down'})
+		} catch {
+			btn := frame.FindElement({Type:'Button',Name:'Maximize'})
+		}
+		btn.Click()
+	}
+}
 ;#endregion
 
 ;#region === INCLUDES FOLLOW ===========================================================
 #Include Gdip_All.ahk
 #Include FindText_v2.ahk
+#Include UIA.ahk
