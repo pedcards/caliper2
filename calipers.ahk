@@ -35,6 +35,8 @@ MainGUI()
 ^Right::clickPicIX("next")
 ^Up::clickPicIX("zoom+")
 ^Down::clickPicIX("zoom-")
+Ctrl & ]::clickPicIX("gain+")
+Ctrl & [::clickPicIX("gain-")
 #HotIf 
 
 OnMessage(0x201, WM_LBUTTONDOWN)														; LMB press
@@ -805,6 +807,10 @@ clickPicIX(action) {
 	case "next":
 		btn := frame.FindElement({Type:'Button',Name:'Next Page'})
 		btn.Click()
+	case "gain+":
+
+	case "gain-":
+		
 	case "zoom+":
 		group := frame
 					.FindElement({Type:'DataItem',Name:'Change Tile:'})					; First "Change Tile:" label
