@@ -33,8 +33,8 @@ MainGUI()
 #HotIf (winID:=WinActive('ahk_exe msedge.exe')) && (WinGetTitle('ahk_id ' winID)~="General|Cardiac")
 ^Left::clickPicIX("prev")
 ^Right::clickPicIX("next")
-^Up::clickPicIX("zoom")
-^Down::clickPicIX("down")
+^Up::clickPicIX("zoom+")
+^Down::clickPicIX("zoom-")
 #HotIf 
 
 OnMessage(0x201, WM_LBUTTONDOWN)														; LMB press
@@ -805,7 +805,7 @@ clickPicIX(action) {
 	case "next":
 		btn := frame.FindElement({Type:'Button',Name:'Next Page'})
 		btn.Click()
-	case "zoom":
+	case "zoom+":
 		group := frame
 					.FindElement({Type:'DataItem',Name:'Change Tile:'})					; First "Change Tile:" label
 					.WalkTree("p2")
@@ -816,7 +816,7 @@ clickPicIX(action) {
 			compressed := combo.WaitElement({Name:'Compressed Wave'},5000)				; updated droplist
 			compressed.Click()
 		}
-	case "down":
+	case "zoom-":
 		try {
 			btn := frame.FindElement({Type:'Button',Name:'Restore Down'})
 		} catch {
