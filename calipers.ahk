@@ -802,11 +802,9 @@ clickPicIX(action) {
 	try switch action
 	{
 	case "prev":
-		btn := frame.FindElement({Type:'Button',Name:'Previous Page'})
-		btn.Click()
+		findPageBtn("Previous Page")
 	case "next":
-		btn := frame.FindElement({Type:'Button',Name:'Next Page'})
-		btn.Click()
+		findPageBtn("Next Page")
 	case "gain+":
 
 	case "gain-":
@@ -829,6 +827,13 @@ clickPicIX(action) {
 			btn := frame.FindElement({Type:'Button',Name:'Maximize'})
 		}
 		btn.Click()
+	}
+
+	findPageBtn(action) {
+		try {
+			btn := frame.FindElement({Type:'Button',Name:action})
+			btn.Click()
+		}
 	}
 }
 ;#endregion
