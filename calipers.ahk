@@ -804,6 +804,7 @@ clickPicIX(action) {
 					, "Restore Down","B")
 	tileLevels := Map("Compressed Wave","A"
 					, "Strip","B")
+	gainLevels := ["x1/2","x1","x2"]
 
 	try switch action
 	{
@@ -812,9 +813,9 @@ clickPicIX(action) {
 	case "next":
 		changePage("Next Page")
 	case "gain+":
-
+		changeGain(+1)
 	case "gain-":
-		
+		changeGain(-1)
 	case "zoomUp":
 		changeZoom(+1)
 	case "zoomDown":
@@ -877,6 +878,19 @@ clickPicIX(action) {
 			newbox := box.WaitElement({Name:lab1},5000)
 			newbox.Click()
 		}
+	}
+	changeGain(val) {
+		gainGroup := frame.FindElement({Type:'DataItem',Name:'Wave Gain:'}).WalkTree("p,+1")
+		gainBox := gainGroup.FindElement({Type:'ComboBox'})
+		gainState := gainBox.WalkTree("p1").Name
+		gain0 := ObjHasValue(gainLevels,gainState)
+		gain1 := gain0+val
+		if (gain1>gainLevels.Length) or (gain1<1) {
+			return
+		}
+		gainBox.Expand()
+		newGain := gainBox.WaitElement({Type:'ListItem',Name:gainLevels[gain1]})
+		newGain.Click()
 	}
 }
 
