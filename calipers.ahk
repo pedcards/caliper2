@@ -808,9 +808,9 @@ clickPicIX(action) {
 	try switch action
 	{
 	case "prev":
-		findPageBtn("Previous Page")
+		changePage("Previous Page")
 	case "next":
-		findPageBtn("Next Page")
+		changePage("Next Page")
 	case "gain+":
 
 	case "gain-":
@@ -821,7 +821,7 @@ clickPicIX(action) {
 		changeZoom(-1)
 	}
 
-	findPageBtn(action) {
+	changePage(action) {
 		btn := frame.FindElement({Type:'Button',Name:action})
 		btn.Click()
 	}
