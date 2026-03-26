@@ -834,6 +834,61 @@ clickPicIX(action) {
 			btn := frame.FindElement({Type:'Button',Name:action})
 			btn.Click()
 		}
+ObjHasValue(aObj, aValue, rx:="") {
+/*	Check if aValue is contained within aObj, return index value
+	If aObj is Map(), also check key:value pairs for matching value, then key names
+	If (rx), compare RegEx in both directions
+*/
+	if (aValue="") {																	; null aValue is error
+		return false
+	}
+	if (props := ObjOwnPropCount(aObj)) {
+		aProps := aObj.OwnProps()
+		aKeys := aObj.OwnProps()
+		/*	Check values of property keys
+		*/
+		for key,val in aProps
+		{
+			if (compare(val)) {
+				return key
+			}
+		}
+		/*	Check property key names
+		*/
+		for key,val in aKeys
+		{
+			if (compare(key)) {
+				return key
+			}
+		}
+
+	} else {
+		/*	Check values in object (i.e. arrays)
+		*/
+		for key,val in aObj
+		{
+			if (compare(val)) {
+				return key
+			}
+		}
+	}
+	
+	return false
+
+	compare(val) {
+		if (rx) {
+			if (val ~= "i)" aValue) {													; val=text, aValue=RX
+				return true
+			}
+			if (aValue ~= "i)" val) {													; aValue=text, val=RX
+				return true
+			}
+		} else {
+			if (val = aValue) {															; otherwise just string match
+				return true
+			}
+		}
+		return false
 	}
 }
 ;#endregion
