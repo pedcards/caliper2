@@ -33,8 +33,8 @@ MainGUI()
 #HotIf (winID:=WinActive('ahk_exe msedge.exe')) && (WinGetTitle('ahk_id ' winID)~="General|Cardiac")
 ^Left::clickPicIX("prev")
 ^Right::clickPicIX("next")
-^Up::clickPicIX("zoom+")
-^Down::clickPicIX("zoom-")
+^Up::clickPicIX("zoomUp")
+^Down::clickPicIX("zoomDown")
 Ctrl & ]::clickPicIX("gain+")
 Ctrl & [::clickPicIX("gain-")
 #HotIf 
@@ -798,6 +798,12 @@ httpComm(verb) {
 clickPicIX(action) {
 	hwnd := WinActive("ahk_exe msedge.exe")
 	frame := UIA.ElementFromHandle(hwnd)
+	
+	zoomLevels := ['BB','AB','AA',"BA"]
+	timeLevels := Map("Maximize","A"
+					, "Restore Down","B")
+	tileLevels := Map("Compressed Wave","A"
+					, "Strip","B")
 
 	try switch action
 	{
@@ -809,31 +815,71 @@ clickPicIX(action) {
 
 	case "gain-":
 		
-	case "zoom+":
-		group := frame
-					.FindElement({Type:'DataItem',Name:'Change Tile:'})					; First "Change Tile:" label
-					.WalkTree("p2")
-		combo := group.FindElement({Type:"ComboBox"})									; Find first combo box
-		
-		if (combo.WalkTree("p1").Name = "Strip") {
-			combo.Expand()
-			compressed := combo.WaitElement({Name:'Compressed Wave'},5000)				; updated droplist
-			compressed.Click()
-		}
-	case "zoom-":
-		try {
-			btn := frame.FindElement({Type:'Button',Name:'Restore Down'})
-		} catch {
-			btn := frame.FindElement({Type:'Button',Name:'Maximize'})
-		}
-		btn.Click()
+	case "zoomUp":
+		changeZoom(+1)
+	case "zoomDown":
+		changeZoom(-1)
 	}
 
 	findPageBtn(action) {
+		btn := frame.FindElement({Type:'Button',Name:action})
+		btn.Click()
+	}
+	findPageZoom() {
 		try {
-			btn := frame.FindElement({Type:'Button',Name:action})
+			timeFocus := frame.FindElement({MatchMode:'RegEx',Type:'DataItem',Name:'Current time focus'})
+			timeFocusBtn := timeFocus.FindElement({Type:'Button'})
+			timeFocusState := timeLevels[timeFocusBtn.Name]
+		} catch {
+			timeFocusState := "_"
+		}
+		try {
+			tileGroup := frame
+							.FindElement({Type:'DataItem',Name:'Change Tile:',Index:1})	; First "Change Tile:" label
+							.WalkTree("p2")
+			combo := tileGroup.FindElement({Type:"ComboBox",Index:1})					; Find first combo box
+			comboState := tileLevels[combo.WalkTree("p1").Name]
+		} catch {
+			combo := ""
+			comboState := "A"
+		}
+		screenState := timeFocusState . comboState
+
+		return {zoom:ObjHasValue(zoomLevels,screenState),
+				timeBtn:timeFocusBtn,
+				tileBox:combo
+		}
+	}
+	changeZoom(delta) {
+		zoomObj := findPageZoom()
+		lev0 := zoomObj.zoom
+		lev1 := lev0+delta
+		if (lev1>zoomLevels.Length) or (lev1<1) {
+			return
+		}
+		stat0 := StrSplit(zoomLevels[lev0])
+		stat1 := StrSplit(zoomLevels[lev1])
+
+		if (stat0[1] != stat1[1]) {
+			btn := zoomObj.timeBtn
 			btn.Click()
 		}
+		if (stat0[2] != stat1[2]) {
+			box := zoomObj.tileBox
+			lab0 := box.WalkTree("p1").Name
+			if lab0="Compressed Wave" {
+				lab1 := "Strip"
+			}
+			if lab0="Strip" {
+				lab1 := "Compressed Wave"
+			}
+			box.Expand()
+			newbox := box.WaitElement({Name:lab1},5000)
+			newbox.Click()
+		}
+	}
+}
+
 ObjHasValue(aObj, aValue, rx:="") {
 /*	Check if aValue is contained within aObj, return index value
 	If aObj is Map(), also check key:value pairs for matching value, then key names
